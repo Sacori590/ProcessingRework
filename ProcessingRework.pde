@@ -59,11 +59,15 @@ void setup() {
   C2.position = A;
   C1.idle = new Sprite(cabine_idle, 128);
   C2.idle = new Sprite(cabine_idle, 128);
+  A.img = station;
+
 
 
   //resizing
+
   if (resize_factor > 1) {
     for (PImage e : sprites) {
+      print(e);
       e.resize((e.width/resize_factor), (e.height/resize_factor));
     }
     A.img.resize((width/resize_factor), (height/resize_factor));
@@ -87,7 +91,14 @@ int queue(int x, int iter, ArrayList<Personne> queue) {
   }
   queue.get(iter).goTo(x);
 
-
+  if (queue.get(iter).atStation(A) && queue == enterer) {
+    try {
+      C1.mount(queue.get(iter));
+    }
+    catch(GuardException e) {
+      println(e);
+    }
+  }
   return queue(x-queue.get(iter).anim_size/3, ++iter, queue);
 }
 
@@ -107,8 +118,9 @@ void mousePressed() {
     A.persons.get(A.persons.size()-1).step_size =  (A.persons.get(A.persons.size()-1).step_size/resize_factor) +2;
   }
   to_remove = null;
-  for (Personne s : A.persons) {
-
+  Iterator<Personne> it = A.persons.iterator();
+  while (it.hasNext()) {
+    Personne s = it.next();
     //action to button
     if (s.bubble.pop_up_elements.get(0).in()) {
       s.buy(Titre_de_transport.Ticket);
@@ -124,6 +136,8 @@ void mousePressed() {
       try {
         C1.mount(s);
         enterer.add(s);
+
+        A.persons.remove(it);
         to_remove = s;
       }
       catch(GuardException e ) {

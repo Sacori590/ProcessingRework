@@ -51,6 +51,12 @@ public class Personne extends Sprite {
 
   void buy(Titre_de_transport t) throws GuardException {
     if (this.titre == Titre_de_transport.None) {
+      this.img = sprites.get(2);
+      this.idle.img = sprites.get(3);
+      if (Titre_de_transport.Ticket == t) {
+        this.img = sprites.get(4);
+        this.idle.img = sprites.get(5);
+      }
       this.titre = t;
     } else {
       throw new GuardException("la personne possède déjà un titre de transport");
