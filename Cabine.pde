@@ -1,0 +1,128 @@
+import java.util.ArrayList;
+
+public class Cabine extends Sprite {
+  // position appartient à {'A', 'B', 'C'}
+  Station position;
+  // Id appartient à {'1','2'}
+  char Id;
+  ArrayList<Personne> persons;
+
+  Cabine(char id, PImage img, int a_s) throws InitialisationException {
+    super(img, a_s);
+    char[] ids = { '1', '2' };
+    Boolean idValid = false;
+    int i = 0;
+    while (idValid == false && i < ids.length) {
+      idValid = (ids[i++] == id);
+    }
+
+    if (idValid) {
+
+      this.Id = id;
+      this.persons = new ArrayList<Personne>();
+    } else {
+      throw new InitialisationException("\'id\' must be in {'1','2'}");
+    }
+  }
+
+  Cabine(char id, Station pos, PImage img, int a_s) throws InitialisationException {
+    super(img, a_s);
+    char[] ids = { '1', '2' };
+    Boolean idValid = false;
+    int i = 0;
+    while (idValid == false && i < ids.length) {
+      idValid = (ids[i++] == id);
+    }
+    char[] poss = { 'A', 'B', 'C' };
+    Boolean posValid = false;
+    i = 0;
+    while (posValid == false && i < poss.length) {
+      posValid = (poss[i++] == pos.Id);
+    }
+    if (idValid && posValid) {
+      this.position = pos;
+      this.Id = id;
+      this.persons = new ArrayList<Personne>();
+    } else {
+      throw new InitialisationException("\'position\' must be in {'A', 'B', 'C'} and \'id\' in {'1','2'}");
+    }
+  }
+
+  @Override
+    public String toString() {
+    if (this.position == null)
+      return "this == null";
+    return String.format("Cabine %c >> Position : %c | Persons : %d", this.Id, this.position.Id, this.count());
+  }
+  /*
+  // déplace la cabine vers la prochaine station possible
+   void move(Station to) throws GuardException {
+   // System.out.println(String.format("La cabine %c se déplace de la station %c à
+   // la station %c", this.Id,this.Id, to.Id));
+   this.position.remove(this);
+   this.position = to;
+   to.add(this);
+   }*/
+
+  // compte le nombre de personne dans une cabine
+  int count() {
+    return persons.size();
+  }
+
+  void mount(Personne personne) throws GuardException {
+    /*
+         * guarde
+     * la personne doit avoir un ticket ou un abonnement
+     * la personne doit être à la même station que la cabine
+     * les personnes avec un ticket rentre après celle avec un abonnement
+     */
+    Station station = personne.station;
+    boolean priority = false;
+    if (station == null) {
+
+      return;
+    }
+    if (this.count() >= 4) {
+      throw new GuardException("Cabine.mount(Personne), too much persons in cabine");
+    }
+    if (personne.titre == Titre_de_transport.Ticket) {
+      for (Personne p : station.persons) {
+        if (p.titre == Titre_de_transport.Subscription) {
+          priority = false;
+          break;
+        }
+        priority = true;
+      }
+    } else if (personne.titre == Titre_de_transport.Subscription) {
+      priority = true;
+    }
+    if (personne.titre != Titre_de_transport.None && personne.station == this.position && priority) {
+      //station.remove(personne);
+      this.persons.add(personne);
+      personne.cabine = this;
+      personne.station = null;
+    } else {
+
+      throw new GuardException("Cabine.mount(Personne)");
+    }
+  }
+
+  void dismount(Personne personne) throws GuardException {
+    /*
+         * la personne doit être dans une cabine
+     * cas particulier un ticket doit se déchirer à la sortie
+     */
+    Station station = this.position;
+    if (this.persons.contains(personne)) {
+      station.add(personne);
+      this.persons.remove(personne);
+      personne.station = station;
+      personne.cabine = null;
+      if (personne.titre == Titre_de_transport.Ticket) {
+        personne.shred();
+      }
+    } else {
+      throw new GuardException("Sprite.Personne.dismount(Personne)");
+    }
+  }
+}
