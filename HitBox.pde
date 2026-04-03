@@ -1,9 +1,9 @@
 public class HitBox {
-  int x1, y1, x2, y2, xoffset, yoffset;
+  float x1, y1, x2, y2, xoffset, yoffset;
   boolean clickable;
 
 
-  HitBox(int x1, int y1, int x2, int y2) {
+  HitBox(float x1, float y1, float x2, float y2) {
     this.x1 = x1;
     this.x2 = x2;
     this.y1 =y1;
@@ -24,7 +24,7 @@ public class HitBox {
     return false;
   }
 
-  public void set(int x1, int y1, int x2, int y2) {
+  public void set(float x1, float y1, float x2, float y2) {
     this.x1 = x1;
     this.x2 = x2;
     this.y1 =y1;

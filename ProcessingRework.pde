@@ -89,7 +89,7 @@ int queue(int x, int iter, ArrayList<Personne> queue) {
     return 0;
   }
   Personne current = queue.get(iter);
-  current.goTo(x);
+  current.walk(x, current.y, 1, sprite_size/3, 0);
   if (enterer.contains(current) && current.atStation(A)) {
     print("entering ", current);
 
