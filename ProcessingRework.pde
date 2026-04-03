@@ -16,7 +16,7 @@ int resize_factor = 1;
 Cabine C1, C2;
 Building A, B, C;
 Cabine cabine1;
-
+boolean debug_mode = false;
 
 
 
@@ -47,8 +47,8 @@ void setup() {
   //create cabines and stations
   C1 = new Cabine('1', cabine, 128);
   C2 = new Cabine('2', cabine, 128);
-  C1.x = 132;
-  C1.y = 312;
+  C1.x = 896;
+  C1.y = 529;
   A = new Building('A', C1);
   B = new Building('B', C2);
   C = new Building('C', null);
@@ -89,7 +89,7 @@ int queue(int x, int iter, ArrayList<Personne> queue) {
     return 0;
   }
   Personne current = queue.get(iter);
-  current.walk(x, current.y, 1, sprite_size/3, 0);
+  current.walk(x, current.y, 1, sprite_size/3, sprite_size/3);
   if (enterer.contains(current) && current.atStation(A)) {
 
     A.persons.add(current);
@@ -104,11 +104,11 @@ int queue(int x, int iter, ArrayList<Personne> queue) {
 
 void mousePressed() {
 
-  //println(mouseX, mouseY);
+  println(mouseX, mouseY);
   // set actioin to add_person_button
   if (add_person_button.in()) {
     //add sprite
-    A.persons.add(new Personne(sprites.get(0), sprite_size, "", null, A));
+    A.persons.add(new Personne(sprites.get(0), sprite_size, null, A));
     A.persons.get(A.persons.size()-1).idle = new Sprite(sprites.get(1), sprite_size);
     A.persons.get(A.persons.size()-1).x = -sprite_size;
     A.persons.get(A.persons.size()-1).y = height-A.persons.get((A.persons.size()-1)).img.height;
@@ -157,6 +157,8 @@ void mousePressed() {
   if (debug.in()) {
     println(A);
     println(C1);
+    debug_mode = !debug_mode;
+    C1.move(B);
   }
 }
 
@@ -184,6 +186,9 @@ void draw() {
       s.bubble.popUpMenu();
     }
   }
-  C1.anime(1);
+
+  if (debug_mode) {
+    C1.walk(100, 295, 1, C1.step_size/3, C1.step_size/3);
+  }
 }
 // selection de l'action en faisant des randoms sur si la précondition est vérifiée ou pas dans une liste précise et pas tous pour ne pas perdre des ressources inutillements

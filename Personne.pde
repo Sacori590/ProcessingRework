@@ -5,14 +5,6 @@ public class Personne extends Sprite {
   Cabine cabine;
   Station station;
 
-  List<String> prenoms = Arrays.asList(
-    "Emma", "Léna", "Chloé", "Manon", "Camille",
-    "Sarah", "Inès", "Clara", "Louise", "Eva",
-    "Jade", "Slina", "Zoé", "Aurore", "Mila",
-    "Lucie", "Julie", "Marine", "Amélia", "Yasmine",
-    "Margot", "Clémence", "Margaux", "Anais", "Soriala",
-    "Alizée", "Amandine", "Clothilde", "Hiba", "Romane"
-    );
   /*
      * ajoute une personne en lui donnant une position, un nom, un titre de
    * transport
@@ -33,6 +25,14 @@ public class Personne extends Sprite {
     super(img, a_s);
     this.titre = Titre_de_transport.None;
     this.name = n;
+    this.cabine = c;
+    this.station = s;
+  }
+
+  Personne(PImage img, int a_s, Cabine c, Station s) throws InitialisationException {
+    super(img, a_s);
+    this.titre = Titre_de_transport.None;
+    this.name = Name.getRandomName();
     this.cabine = c;
     this.station = s;
   }

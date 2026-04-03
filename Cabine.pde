@@ -54,15 +54,17 @@ public class Cabine extends Sprite {
       return "this == null";
     return String.format("Cabine %c >> Position : %c | Persons : %d", this.Id, this.position.Id, this.count());
   }
-  /*
+
   // déplace la cabine vers la prochaine station possible
-   void move(Station to) throws GuardException {
-   // System.out.println(String.format("La cabine %c se déplace de la station %c à
-   // la station %c", this.Id,this.Id, to.Id));
-   this.position.remove(this);
-   this.position = to;
-   to.add(this);
-   }*/
+  void move(Station destination) throws GuardException {
+    if (destination != this.position) {
+      this.position.remove(this);
+      this.position = destination;
+      destination.add(this);
+    } else {
+      throw new GuardException("Cabine.move(Station)");
+    }
+  }
 
   // compte le nombre de personne dans une cabine
   int count() {
