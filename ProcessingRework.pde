@@ -91,7 +91,6 @@ int queue(int x, int iter, ArrayList<Personne> queue) {
   Personne current = queue.get(iter);
   current.walk(x, current.y, 1, sprite_size/3, 0);
   if (enterer.contains(current) && current.atStation(A)) {
-    print("entering ", current);
 
     A.persons.add(current);
     C1.mount(current);
@@ -156,6 +155,8 @@ void mousePressed() {
     }
   }
   if (debug.in()) {
+    println(A);
+    println(C1);
   }
 }
 

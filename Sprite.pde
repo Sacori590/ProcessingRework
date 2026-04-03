@@ -40,7 +40,7 @@ public class Sprite {
 
   void walk(float gx, float gy, int dir, int xoffset, int yoffset) {
 
-    if (gx-this.step_size-5 <= this.x  && this.x <= gx+this.step_size+5) {
+    if (gx-this.step_size-5 <= this.x  && this.x <= gx+this.step_size+5 && gy-this.step_size-5 <= this.y  && this.y <= gy+this.step_size+5) {
       this.idle.x = this.x;
       this.idle.y = this.y;
       this.idle.hitbox.set(this.x+48, this.y+60, this.x+this.anim_size-48, this.y+this.anim_size);
@@ -52,7 +52,6 @@ public class Sprite {
       this.x = (int) lerp(this.x, gx, 0.11);
 
       this.y = (int) lerp(this.y, gy, 0.11);
-      print(this.x, " ", this.y, "\n");
       this.hitbox.set(this.x+xoffset, this.y+yoffset, this.x+this.anim_size-xoffset, this.y+this.anim_size);
       //this.bubble.text = this.toString();
       this.bubble.set(this.x- (int) (textWidth(this.bubble.text)/2)+anim_size/2, this.y+20, this.x+this.anim_size, this.y+40);
@@ -96,6 +95,6 @@ public class Sprite {
    */
 
   boolean atStation(Building station) {
-    return (this.x-3 <= width-station.width+station.width/6 && this.x+3 >= width-station.width+station.width/6);
+    return (this.x <= width-station.width+station.width/6-10 && this.x >= width-station.width+station.width/6-30);
   }
 }
