@@ -16,7 +16,6 @@ int resize_factor = 1;
 Cabine C1, C2;
 Building A, B, C;
 Cabine cabine1;
-Personne to_remove;
 
 
 
@@ -89,24 +88,24 @@ int queue(int x, int iter, ArrayList<Personne> queue) {
   if (iter == queue.size()) {
     return 0;
   }
-  queue.get(iter).goTo(x);
+  Personne current = queue.get(iter);
+  current.goTo(x);
+  if (enterer.contains(current) && current.atStation(A)) {
+    print("entering ", current);
 
-  if (queue.get(iter).atStation(A) && queue == enterer) {
-    try {
-      C1.mount(queue.get(iter));
-    }
-    catch(GuardException e) {
-      println(e);
-    }
+    A.persons.add(current);
+    C1.mount(current);
+    enterer.remove(current  );
+    iter--;
   }
-  return queue(x-queue.get(iter).anim_size/3, ++iter, queue);
+  return queue(x-current.anim_size/3, ++iter, queue);
 }
 
 
 
 void mousePressed() {
 
-  println(mouseX, mouseY);
+  //println(mouseX, mouseY);
   // set actioin to add_person_button
   if (add_person_button.in()) {
     //add sprite
@@ -117,7 +116,6 @@ void mousePressed() {
     A.persons.get(A.persons.size()-1).bubble.initAction();
     A.persons.get(A.persons.size()-1).step_size =  (A.persons.get(A.persons.size()-1).step_size/resize_factor) +2;
   }
-  to_remove = null;
   Iterator<Personne> it = A.persons.iterator();
   while (it.hasNext()) {
     Personne s = it.next();
@@ -132,17 +130,8 @@ void mousePressed() {
       s.shred();
     }
     if (s.bubble.pop_up_elements.get(3).in()) {
-
-      try {
-        C1.mount(s);
-        enterer.add(s);
-
-        A.persons.remove(it);
-        to_remove = s;
-      }
-      catch(GuardException e ) {
-        println(e);
-      }
+      enterer.add(s);
+      it.remove();
     }
 
 
@@ -168,12 +157,10 @@ void mousePressed() {
   }
   if (debug.in()) {
   }
-  A.persons.remove(to_remove);
 }
 
 //draw function
 void draw() {
-  to_remove = null;
   //Background
   image(bg, 0, 0);
   A.draw();
@@ -196,14 +183,6 @@ void draw() {
       s.bubble.popUpMenu();
     }
   }
-
-  for (Personne s : enterer) {
-    if (s.atStation(A)) {
-      to_remove = s;
-      C1.persons.add(s);
-    }
-  }
-  enterer.remove(to_remove);
   C1.anime(1);
 }
 // selection de l'action en faisant des randoms sur si la précondition est vérifiée ou pas dans une liste précise et pas tous pour ne pas perdre des ressources inutillements

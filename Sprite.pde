@@ -52,7 +52,7 @@ public class Sprite {
     }
     int dir = 1;
 
-    this.idle.y = this.y;
+    //this.idle.y = this.y;
     if (this.x+this.step_size <= end_x ) {
       walk(1, anim_size/3, anim_size/3);
     }

@@ -97,7 +97,7 @@ public class Cabine extends Sprite {
       priority = true;
     }
     if (personne.titre != Titre_de_transport.None && personne.station == this.position && priority) {
-      //station.remove(personne);
+      station.remove(personne);
       this.persons.add(personne);
       personne.cabine = this;
       personne.station = null;
