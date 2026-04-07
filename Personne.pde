@@ -84,7 +84,7 @@ public class Personne extends Sprite {
   }
 
   boolean atStation(Building station) {
-    //println(station.x+station.width*0.26, this.x+this.anim_size/2, station.x+station.width*0.34);
+    println(station.x+station.width*0.26, this.x+this.anim_size/2, station.x+station.width*0.34);
     return (station.x+station.width*0.26 <= this.x+this.anim_size/2
       && this.x+this.anim_size/2 <= station.x+station.width*0.34);
   }

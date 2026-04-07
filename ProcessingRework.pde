@@ -70,7 +70,7 @@ void setup() {
       print(e);
       e.resize((e.width/resize_factor), (e.height/resize_factor));
     }
-    A.img.resize((width/resize_factor), (height/resize_factor));
+    A.img.resize((A.img.width/resize_factor), (A.img.height/resize_factor));
   }
 
 
@@ -90,7 +90,6 @@ int queue(float x, int iter, ArrayList<Personne> queue) {
     return 0;
   }
   Personne current = queue.get(iter);
-  current.walk(x, 1, sprite_size/3, sprite_size/3);
   if (enterer.contains(current) && current.atStation(A)) {
 
     A.persons.add(current);
@@ -98,11 +97,13 @@ int queue(float x, int iter, ArrayList<Personne> queue) {
     enterer.remove(current  );
     iter--;
 
-    C1.persons.get(0).x = C1.x;
-    C1.persons.get(0).y = C1.y;
+    C1.persons.get(0).set(C1.x, C1.y);
   }
-  if (current.atStation(A))
-    return queue(x-current.anim_size/3, ++iter, queue);
+  current.walk(x-current.anim_size/3, 1, sprite_size/3, sprite_size/3);
+  if (current.atStation(A)) {
+
+    return queue(current.x-current.anim_size/3, ++iter, queue);
+  }
   return 0;
 }
 
@@ -205,8 +206,8 @@ void draw() {
 
   //ForeGround
   //faire la file
-  A.iter = queue(width-A.x + A.width*0.30, A.iter, A.persons);
-  iter_on_enterer = queue(width-A.x + A.width*0.30, iter_on_enterer, enterer);
+  A.iter = queue(A.x+ A.width*0.26, A.iter, A.persons);
+  iter_on_enterer = queue(A.x + A.width*0.26, iter_on_enterer, enterer);
 
 
   //UI
@@ -230,6 +231,5 @@ void draw() {
     C1.bubble.popUpMenu();
   }
   C1.idle.anime(1);
-  print(C1.atStation(A));
 }
 // selection de l'action en faisant des randoms sur si la précondition est vérifiée ou pas dans une liste précise et pas tous pour ne pas perdre des ressources inutillements
