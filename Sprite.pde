@@ -23,7 +23,14 @@ public class Sprite {
     this.bubble = new UI(0, 0, a_s, a_s, this.toString());
     //must setup idle by hand
   }
-
+  void set(float x, float y) {
+    this.x = x;
+    this.y = y;
+    this.idle.x = x;
+    this.idle.y = y;
+    this.hitbox.set(x+48, y+60, x+this.anim_size-48, y+this.anim_size);
+    this.bubble.set(x - (int) (textWidth(this.bubble.text)/2)+anim_size/2, y-this.img.height, x+this.anim_size, y-this.img.height+20);
+  }
   void anime(int dir) {
     //permet de lire l'animation d'un sprite
     int a_s = this.anim_size;
@@ -44,7 +51,7 @@ public class Sprite {
       this.idle.x = this.x;
       this.idle.y = this.y;
       this.idle.hitbox.set(this.x+48, this.y+60, this.x+this.anim_size-48, this.y+this.anim_size);
-      this.bubble.set(this.x - (int) (textWidth(this.bubble.text)/2)+anim_size/2, this.y+20, this.x+this.anim_size, this.y+40);
+      this.bubble.set(this.x - (int) (textWidth(this.bubble.text)/2)+anim_size/2, this.y-this.img.height, this.x+this.anim_size, this.y-this.img.height+20);
 
       this.idle.anime(dir);
     } else {
@@ -52,9 +59,30 @@ public class Sprite {
       this.x = (int) lerp(this.x, gx, 0.11);
 
       this.y = (int) lerp(this.y, gy, 0.11);
+      this.idle.x = this.x;
+      this.idle.y = this.y;
       this.hitbox.set(this.x+xoffset, this.y+yoffset, this.x+this.anim_size-xoffset, this.y+this.anim_size);
       //this.bubble.text = this.toString();
-      this.bubble.set(this.x- (int) (textWidth(this.bubble.text)/2)+anim_size/2, this.y+20, this.x+this.anim_size, this.y+40);
+      this.bubble.set(this.x- (int) (textWidth(this.bubble.text)/2)+anim_size/2, this.y-this.img.height, this.x+this.anim_size, this.y-this.img.height+20);
+    }
+  }
+  void walk(float gx, int dir, int xoffset, int yoffset) {
+
+    if (gx-this.step_size-5 <= this.x  && this.x <= gx+this.step_size+5) {
+      this.idle.x = this.x;
+      this.idle.y = this.y;
+      this.idle.hitbox.set(this.x+48, this.y+60, this.x+this.anim_size-48, this.y+this.anim_size);
+      this.bubble.set(this.x - (int) (textWidth(this.bubble.text)/2)+anim_size/2, this.y-this.img.height, this.x+this.anim_size, this.y-this.img.height+20);
+
+      this.idle.anime(dir);
+    } else {
+      this.anime(dir);
+      this.x += this.step_size*dir;
+
+
+      this.hitbox.set(this.x+xoffset, this.y+yoffset, this.x+this.anim_size-xoffset, this.y+this.anim_size);
+      //this.bubble.text = this.toString();
+      this.bubble.set(this.x- (int) (textWidth(this.bubble.text)/2)+anim_size/2, this.y-this.img.height, this.x+this.anim_size, this.y-this.img.height+20);
     }
   }
   /*
@@ -93,8 +121,4 @@ public class Sprite {
    return super.toString() + " " + String.format("Sprite {x : %d, y : %d}", x, y );
    }
    */
-
-  boolean atStation(Building station) {
-    return (this.x <= width-station.width+station.width/6-10 && this.x >= width-station.width+station.width/6-30);
-  }
 }

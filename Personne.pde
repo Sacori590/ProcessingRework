@@ -75,4 +75,17 @@ public class Personne extends Sprite {
     return (this.station == station
       && (this.titre == Titre_de_transport.Ticket || this.titre == Titre_de_transport.Subscription));
   }
+  void initPopUp() {
+    this.bubble.pop_up_elements = new ArrayList<UI>();
+    this.bubble.pop_up_elements.add(new UI(0, 0, 0, 0, "Buy ticket"));
+    this.bubble.pop_up_elements.add(new UI(0, 0, 0, 0, "Buy subscription"));
+    this.bubble.pop_up_elements.add(new UI(0, 0, 0, 0, "Shred it !"));
+    this.bubble.pop_up_elements.add(new UI(0, 0, 0, 0, "Enter current station"));
+  }
+
+  boolean atStation(Building station) {
+    //println(station.x+station.width*0.26, this.x+this.anim_size/2, station.x+station.width*0.34);
+    return (station.x+station.width*0.26 <= this.x+this.anim_size/2
+      && this.x+this.anim_size/2 <= station.x+station.width*0.34);
+  }
 }

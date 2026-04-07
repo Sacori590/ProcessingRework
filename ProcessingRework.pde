@@ -47,8 +47,8 @@ void setup() {
   //create cabines and stations
   C1 = new Cabine('1', cabine, 128);
   C2 = new Cabine('2', cabine, 128);
-  C1.x = 896;
-  C1.y = 529;
+  C1.x = 905;
+  C1.y = 577;
   A = new Building('A', C1);
   B = new Building('B', C2);
   C = new Building('C', null);
@@ -59,6 +59,7 @@ void setup() {
   C1.idle = new Sprite(cabine_idle, 128);
   C2.idle = new Sprite(cabine_idle, 128);
   A.img = station;
+  C1.initPopUp();
 
 
 
@@ -84,20 +85,25 @@ void setup() {
   debug = new UI(10, 160, 30, 180, "assign me anything");
 }
 
-int queue(int x, int iter, ArrayList<Personne> queue) {
+int queue(float x, int iter, ArrayList<Personne> queue) {
   if (iter == queue.size()) {
     return 0;
   }
   Personne current = queue.get(iter);
-  current.walk(x, current.y, 1, sprite_size/3, sprite_size/3);
+  current.walk(x, 1, sprite_size/3, sprite_size/3);
   if (enterer.contains(current) && current.atStation(A)) {
 
     A.persons.add(current);
     C1.mount(current);
     enterer.remove(current  );
     iter--;
+
+    C1.persons.get(0).x = C1.x;
+    C1.persons.get(0).y = C1.y;
   }
-  return queue(x-current.anim_size/3, ++iter, queue);
+  if (current.atStation(A))
+    return queue(x-current.anim_size/3, ++iter, queue);
+  return 0;
 }
 
 
@@ -112,9 +118,11 @@ void mousePressed() {
     A.persons.get(A.persons.size()-1).idle = new Sprite(sprites.get(1), sprite_size);
     A.persons.get(A.persons.size()-1).x = -sprite_size;
     A.persons.get(A.persons.size()-1).y = height-A.persons.get((A.persons.size()-1)).img.height;
-    A.persons.get(A.persons.size()-1).bubble.initAction();
+    A.persons.get(A.persons.size()-1).initPopUp();
     A.persons.get(A.persons.size()-1).step_size =  (A.persons.get(A.persons.size()-1).step_size/resize_factor) +2;
   }
+
+  // réadapter la fonction et la donner aux stations et les appeler pour chaque station
   Iterator<Personne> it = A.persons.iterator();
   while (it.hasNext()) {
     Personne s = it.next();
@@ -154,25 +162,51 @@ void mousePressed() {
       }
     }
   }
-  if (debug.in()) {
-    println(A);
+
+  Iterator<Personne> it2 = C1.persons.iterator();
+  while (it2.hasNext()) {
+    Personne s = it2.next();
+    if (C1.bubble.pop_up_elements.get(0).in()) {
+      C1.dismount(s);
+    }
+  }
+
+  if (C1.bubble.pop_up_elements.get(1).in()) {
     println(C1);
+    C1.move(C1.nextStation());
+    C1.walk(100, 295, 1, C1.step_size/3, C1.step_size/3);
+    println(C1);
+  }
+  if (C1.bubble.pop_up_elements.get(2).in()) {
+    println(C1);
+    C1.move(C1.previousStation());
+    C1.walk(100, 295, 1, C1.step_size/3, C1.step_size/3);
+    println(C1);
+  }
+
+  if (debug.in()) {
     debug_mode = !debug_mode;
-    C1.move(B);
+  }
+  if (!C1.hitbox.in()) {
+    C1.bubble.show_pop_up = false;
+  }
+  if (C1.hitbox.in()) {
+    C1.bubble.show_pop_up = true;
   }
 }
 
 //draw function
 void draw() {
   //Background
-  image(bg, 0, 0);
+  //image(bg, 0, 0);
+  rect(0, 0, width, height);
   A.draw();
 
 
   //ForeGround
   //faire la file
-  A.iter = queue(width-A.width+A.width/6, A.iter, A.persons);
-  iter_on_enterer = queue(width-A.width+A.width/6, iter_on_enterer, enterer);
+  A.iter = queue(width-A.x + A.width*0.30, A.iter, A.persons);
+  iter_on_enterer = queue(width-A.x + A.width*0.30, iter_on_enterer, enterer);
 
 
   //UI
@@ -187,8 +221,15 @@ void draw() {
     }
   }
 
-  if (debug_mode) {
-    C1.walk(100, 295, 1, C1.step_size/3, C1.step_size/3);
+
+  for (Personne p : C1.persons) {
+    p.set(C1.x, C1.y);
+    p.idle.anime(1);
   }
+  if (C1.bubble.show_pop_up) {
+    C1.bubble.popUpMenu();
+  }
+  C1.idle.anime(1);
+  print(C1.atStation(A));
 }
 // selection de l'action en faisant des randoms sur si la précondition est vérifiée ou pas dans une liste précise et pas tous pour ne pas perdre des ressources inutillements

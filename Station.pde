@@ -30,8 +30,12 @@ public class Station {
 
   @Override
     public String toString() {
+    if (this.cabine == null) {
+      return "this.cabine == null";
+    }
     return String.format("Station %c >> Cabine n°%c | Persons : %d", this.Id, this.cabine.Id, this.count());
   }
+
 
   void add(Personne p) throws GuardException {
     if (!this.persons.contains(p)) {

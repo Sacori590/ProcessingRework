@@ -42,12 +42,4 @@ public class UI extends HitBox {
     fill(255, 155, 0);
     text(this.text, this.x1, this.y2-5);
   }
-
-  void initAction() {
-    this.pop_up_elements = new ArrayList<UI>();
-    this.pop_up_elements.add(new UI(0, 0, 0, 0, "Buy ticket"));
-    this.pop_up_elements.add(new UI(0, 0, 0, 0, "Buy subscription"));
-    this.pop_up_elements.add(new UI(0, 0, 0, 0, "Shred it !"));
-    this.pop_up_elements.add(new UI(0, 0, 0, 0, "Enter current station"));
-  }
 }
