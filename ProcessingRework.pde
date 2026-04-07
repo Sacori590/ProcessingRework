@@ -11,7 +11,7 @@ PImage bg, station, cabine, cabine_idle;
 
 int iter_on_enterer = 0;
 int sprite_size = 0;
-int resize_factor = 1;
+float resize_factor = 2;
 // logique métier
 Cabine C1, C2;
 Station A, B, C;
@@ -23,7 +23,7 @@ boolean debug_mode = false;
 void setup() {
   // size and bg size must be equals
   pixelDensity(1);
-  size(1024, 768);
+  size(768, 576);
   frameRate(30);
   //fullScreen();
 
@@ -42,6 +42,13 @@ void setup() {
   cabine = loadImage("assets/téléphérique/cabine-Sheet.png");
   cabine_idle = loadImage("assets/téléphérique/cabine1.png");
 
+  if (resize_factor > 1) {
+    for (PImage e : sprites) {
+      print(e);
+      e.resize((int) (e.width/resize_factor), (int) (e.height/resize_factor));
+    }
+    station.resize((int) (station.width/resize_factor), (int) (station.height/resize_factor));
+  }
 
   /* initialize work logic */
   //create cabines and stations
@@ -58,20 +65,14 @@ void setup() {
   C2.position = A;
   C1.idle = new Sprite(cabine_idle, 128);
   C2.idle = new Sprite(cabine_idle, 128);
-  A.img = station;
   C1.initPopUp();
+  B.set(0, height/2 - station.height/2, station.width, height/2 - station.height/2+station.height);
+  C.set(width-station.width, -station.height*0.32, width, station.height-station.height*0.32);
 
 
 
   //resizing
 
-  if (resize_factor > 1) {
-    for (PImage e : sprites) {
-      print(e);
-      e.resize((e.width/resize_factor), (e.height/resize_factor));
-    }
-    A.img.resize((A.img.width/resize_factor), (A.img.height/resize_factor));
-  }
 
 
   // fix positions
@@ -118,9 +119,23 @@ void mousePressed() {
     A.persons.add(new Personne(sprites.get(0), sprite_size, null, A));
     A.persons.get(A.persons.size()-1).idle = new Sprite(sprites.get(1), sprite_size);
     A.persons.get(A.persons.size()-1).x = -sprite_size;
-    A.persons.get(A.persons.size()-1).y = height-A.persons.get((A.persons.size()-1)).img.height;
+    A.persons.get(A.persons.size()-1).y = A.y2-A.persons.get((A.persons.size()-1)).img.height;
     A.persons.get(A.persons.size()-1).initPopUp();
-    A.persons.get(A.persons.size()-1).step_size =  (A.persons.get(A.persons.size()-1).step_size/resize_factor) +2;
+    A.persons.get(A.persons.size()-1).step_size =  (int) (A.persons.get(A.persons.size()-1).step_size/resize_factor) +2;
+    /*--------------*/
+    B.persons.add(new Personne(sprites.get(0), sprite_size, null, B));
+    B.persons.get(B.persons.size()-1).idle = new Sprite(sprites.get(1), sprite_size);
+    B.persons.get(B.persons.size()-1).x = -sprite_size;
+    B.persons.get(B.persons.size()-1).y = B.y2-B.persons.get((B.persons.size()-1)).img.height;
+    B.persons.get(B.persons.size()-1).initPopUp();
+    B.persons.get(B.persons.size()-1).step_size =  (int) (B.persons.get(B.persons.size()-1).step_size/resize_factor) +2;
+    /*--------------*/
+    C.persons.add(new Personne(sprites.get(0), sprite_size, null, C));
+    C.persons.get(C.persons.size()-1).idle = new Sprite(sprites.get(1), sprite_size);
+    C.persons.get(C.persons.size()-1).x = -sprite_size;
+    C.persons.get(C.persons.size()-1).y = C.y2-C.persons.get((C.persons.size()-1)).img.height;
+    C.persons.get(C.persons.size()-1).initPopUp();
+    C.persons.get(C.persons.size()-1).step_size =  (int) (C.persons.get(C.persons.size()-1).step_size/resize_factor) +2;
   }
 
   // réadapter la fonction et la donner aux stations et les appeler pour chaque station
@@ -199,14 +214,18 @@ void mousePressed() {
 //draw function
 void draw() {
   //Background
-  //image(bg, 0, 0);
+  image(bg, 0, 0);
   rect(0, 0, width, height);
   A.draw();
+  B.draw();
+  C.draw();
 
 
   //ForeGround
   //faire la file
   A.iter = queue(A.x1+ A.img.width*0.26, A.iter, A.persons);
+  B.iter = queue(B.x1+ B.img.width*0.26, B.iter, B.persons);
+  C.iter = queue(C.x1+ C.img.width*0.26, C.iter, C.persons);
   iter_on_enterer = queue(A.x1 + A.img.width*0.26, iter_on_enterer, enterer);
 
 

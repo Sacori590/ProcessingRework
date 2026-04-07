@@ -77,7 +77,8 @@ public class Station extends HitBox {
   int count() {
     return this.persons.size();
   }
-  void draw() {
+
+  public void draw() {
     image(this.img, this.x1, this.y1);
   }
 }
