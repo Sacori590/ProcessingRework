@@ -83,9 +83,9 @@ public class Personne extends Sprite {
     this.bubble.pop_up_elements.add(new UI(0, 0, 0, 0, "Enter current station"));
   }
 
-  boolean atStation(Building station) {
-    println(station.x+station.width*0.26, this.x+this.anim_size/2, station.x+station.width*0.34);
-    return (station.x+station.width*0.26 <= this.x+this.anim_size/2
-      && this.x+this.anim_size/2 <= station.x+station.width*0.34);
+  boolean atStation(Station station) {
+    println(station.x1+station.img.width*0.26, this.x+this.anim_size/2, station.x1+station.img.width*0.34);
+    return (station.x1+station.img.width*0.26 <= this.x+this.anim_size/2
+      && this.x+this.anim_size/2 <= station.x1+station.img.width*0.34);
   }
 }

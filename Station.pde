@@ -1,13 +1,18 @@
 import java.util.ArrayList;
 
-public class Station {
+public class Station extends HitBox {
   char Id = '\0';
   ArrayList<Personne> persons;
   Cabine cabine;
+  int iter;
+  PImage img;
 
-  Station(char id, Cabine c) {
-    Boolean cabineValid = true;
+  Station(char id, Cabine c, float size, PImage img) {
+    super(0, 0, size, size);
+    iter = 0;
+    boolean cabineValid = true;
     int i = 0;
+    this.img = img;
     if (c != null) {
       char[] cabines = { '1', '2' };
       cabineValid = false;
@@ -71,5 +76,8 @@ public class Station {
 
   int count() {
     return this.persons.size();
+  }
+  void draw() {
+    image(this.img, this.x1, this.y1);
   }
 }

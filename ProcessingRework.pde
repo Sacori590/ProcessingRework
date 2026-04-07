@@ -14,7 +14,7 @@ int sprite_size = 0;
 int resize_factor = 1;
 // logique métier
 Cabine C1, C2;
-Building A, B, C;
+Station A, B, C;
 Cabine cabine1;
 boolean debug_mode = false;
 
@@ -49,9 +49,9 @@ void setup() {
   C2 = new Cabine('2', cabine, 128);
   C1.x = 905;
   C1.y = 577;
-  A = new Building('A', C1);
-  B = new Building('B', C2);
-  C = new Building('C', null);
+  A = new Station('A', C1, 480, station);
+  B = new Station('B', C2, 480, station);
+  C = new Station('C', null, 480, station);
 
   //cabine configuration
   C1.position = A;
@@ -75,7 +75,7 @@ void setup() {
 
 
   // fix positions
-  A.set(station, width-station.width, height-station.height);
+  A.set(width-station.width, height-station.height, width, height);
 
   bg.resize(width, height);
 
@@ -102,9 +102,9 @@ int queue(float x, int iter, ArrayList<Personne> queue) {
   current.walk(x-current.anim_size/3, 1, sprite_size/3, sprite_size/3);
   if (current.atStation(A)) {
 
-    return queue(current.x-current.anim_size/3, ++iter, queue);
+    return queue(x-current.anim_size/3, ++iter, queue);
   }
-  return 0;
+  return queue(x-current.anim_size/3, ++iter, queue);
 }
 
 
@@ -206,8 +206,8 @@ void draw() {
 
   //ForeGround
   //faire la file
-  A.iter = queue(A.x+ A.width*0.26, A.iter, A.persons);
-  iter_on_enterer = queue(A.x + A.width*0.26, iter_on_enterer, enterer);
+  A.iter = queue(A.x1+ A.img.width*0.26, A.iter, A.persons);
+  iter_on_enterer = queue(A.x1 + A.img.width*0.26, iter_on_enterer, enterer);
 
 
   //UI

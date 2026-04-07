@@ -185,28 +185,11 @@ public class Cabine extends Sprite {
     return ret;
   }
 
-  boolean atStation(Building station) {
-    float xMin = width - station.x + station.width * 0.65;
-    float xMax = width - station.x + station.width * 0.85;
-    float xActuel = this.x + this.anim_size / 2;
-
-    float yMin = height - station.y + station.img.height * 0.2;
-    float yMax = height - station.y + station.img.height * 0.56;
-    float yActuel = this.y + this.img.height / 2;
-
-    boolean dansZone =
-      xMin <= xActuel && xActuel <= xMax &&
-      yMin <= yActuel && yActuel <= yMax;
-
-    println(
-      "dansZone=" + dansZone +
-      " | X[" + xMin + " <= " + xActuel + " <= " + xMax + "]" +
-      " | Y[" + yMin + " <= " + yActuel + " <= " + yMax + "]"
-      );
-    return (station.x+station.width*0.65 <= this.x+this.anim_size/2
-      && this.x+this.anim_size/2 <= station.x+station.width*0.85
-      && station.y + station.img.height*0.2 <= this.y+this.img.height/2
-      && this.y+this.img.height/2 <= station.y + station.img.height*0.56
+  boolean atStation(Station station) {
+    return (station.x1+station.img.width*0.65 <= this.x+this.anim_size/2
+      && this.x+this.anim_size/2 <= station.x1+station.img.width*0.85
+      && station.y1 + station.img.height*0.2 <= this.y+this.img.height/2
+      && this.y+this.img.height/2 <= station.y1 + station.img.height*0.56
       );
   }
 }
