@@ -36,4 +36,7 @@ public class HitBox {
   public void draw(int radius) {
     rect(this.x1, this.y1, this.xoffset, this.yoffset, radius);
   }
+  public void draw() {
+    rect(this.x1, this.y1, this.xoffset, this.yoffset, 0);
+  }
 }

@@ -52,7 +52,7 @@ public class Cabine extends Sprite {
     public String toString() {
     if (this.position == null)
       return "this == null";
-    return String.format("Cabine %c >> Position : %c | Persons : %d", this.Id, this.position.Id, this.count());
+    return String.format("Cabine { Id: %c, Position: %c, Persons: %d }", this.Id, this.position.Id, this.count());
   }
 
   // déplace la cabine vers la prochaine station possible
@@ -137,47 +137,27 @@ public class Cabine extends Sprite {
 
   Station nextStation() {
     Station ret = null;
-    if (this.Id == '1') {
-      if (this.position.Id == 'A') {
-
-        ret = B;
-      } else if (this.position.Id == 'B') {
-        ret = C;
-      } else {
-        ret = A;
-      }
+    if (this.position.Id == 'A') {
+      ret = B;
+    } else if (this.position.Id == 'B') {
+      ret = C;
     } else {
-      if (this.position.Id == 'A') {
-        ret = C;
-      } else if (this.position.Id == 'B') {
-        ret = A;
-      } else {
-        ret = B;
-      }
+      ret = A;
     }
     for (Personne p : this.persons) {
       p.set(this.x, this.y);
     }
     return ret;
   }
+
   Station previousStation() {
     Station ret = null;
-    if (this.Id == '1') {
-      if (this.position.Id == 'A') {
-        ret = C;
-      } else if (this.position.Id == 'B') {
-        ret = A;
-      } else {
-        ret =  B;
-      }
+    if (this.position.Id == 'A') {
+      ret = C;
+    } else if (this.position.Id == 'B') {
+      ret = A;
     } else {
-      if (this.position.Id == 'A') {
-        ret = B;
-      } else if (this.position.Id == 'B') {
-        ret = C;
-      } else {
-        ret = A;
-      }
+      ret =  B;
     }
     for (Personne p : this.persons) {
       p.set(this.x, this.y);

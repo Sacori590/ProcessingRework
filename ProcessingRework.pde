@@ -2,21 +2,21 @@ import java.util.List;
 import java.util.Arrays;
 
 ArrayList<PImage> sprites = new ArrayList<PImage>();
-ArrayList<Personne> enterer = new ArrayList<Personne>();
 
 
 UI add_person_button, debug;
 PImage bg, station, cabine, cabine_idle;
+boolean run = false;
 
-
-int iter_on_enterer = 0;
 int sprite_size = 0;
 float resize_factor = 2;
 // logique métier
 Cabine C1, C2;
 Station A, B, C;
-Cabine cabine1;
+Station StationsSet[];
+Cabine CabineSet[];
 boolean debug_mode = false;
+float[] a;
 
 
 
@@ -25,7 +25,7 @@ void setup() {
   pixelDensity(1);
   size(768, 576);
   frameRate(30);
-  //fullScreen();
+  fullScreen();
 
 
   // initialisation des sprites
@@ -42,45 +42,50 @@ void setup() {
   cabine = loadImage("assets/téléphérique/cabine-Sheet.png");
   cabine_idle = loadImage("assets/téléphérique/cabine1.png");
 
+  //resizing
   if (resize_factor > 1) {
     for (PImage e : sprites) {
-      print(e);
+
       e.resize((int) (e.width/resize_factor), (int) (e.height/resize_factor));
     }
     station.resize((int) (station.width/resize_factor), (int) (station.height/resize_factor));
+    cabine.resize((int) (cabine.width/resize_factor), (int) (cabine.height/resize_factor));
+    cabine_idle.resize((int) (cabine_idle.width/resize_factor), (int) (cabine_idle.height/resize_factor));
   }
+  bg.resize(width, height);
 
   /* initialize work logic */
   //create cabines and stations
-  C1 = new Cabine('1', cabine, 128);
-  C2 = new Cabine('2', cabine, 128);
-  C1.x = 905;
-  C1.y = 577;
+  C1 = new Cabine('1', cabine, cabine.height);
+  C2 = new Cabine('2', cabine, cabine.height );
   A = new Station('A', C1, 480, station);
-  B = new Station('B', C2, 480, station);
-  C = new Station('C', null, 480, station);
+  B = new Station('B', null, 480, station);
+  C = new Station('C', C2, 480, station);
 
   //cabine configuration
   C1.position = A;
-  C2.position = A;
-  C1.idle = new Sprite(cabine_idle, 128);
-  C2.idle = new Sprite(cabine_idle, 128);
+  C2.position = C;
+  C1.idle = new Sprite(cabine_idle, cabine.height);
+  C2.idle = new Sprite(cabine_idle, cabine.height);
+
   C1.initPopUp();
+  C2.initPopUp();
+
+
+  A.set(width-station.width-200, height-station.height, width-200, height);
   B.set(0, height/2 - station.height/2, station.width, height/2 - station.height/2+station.height);
-  C.set(width-station.width, -station.height*0.32, width, station.height-station.height*0.32);
+  C.set(width-station.width-200, 0, width-200, station.height);
 
+  a = C1.position.cabinePos();
+  C1.set(a[0], a[1]);
+  a = C2.position.cabinePos();
+  a = B.cabinePos();
+  C2.set(a[0], a[1]);
 
-
-  //resizing
-
-
+  StationsSet = new Station[]{A, B, C};
+  CabineSet = new Cabine[]{C1, C2};
 
   // fix positions
-  A.set(width-station.width, height-station.height, width, height);
-
-  bg.resize(width, height);
-
-
   sprite_size = sprites.get(0).height;
   add_person_button = new UI(10, 130, 30, 150, "Ajouter une personne");
   debug = new UI(10, 160, 30, 180, "assign me anything");
@@ -91,19 +96,28 @@ int queue(float x, int iter, ArrayList<Personne> queue) {
     return 0;
   }
   Personne current = queue.get(iter);
-  if (enterer.contains(current) && current.atStation(A)) {
 
-    A.persons.add(current);
-    C1.mount(current);
-    enterer.remove(current  );
-    iter--;
+  for (Station s : StationsSet) {
+    for (Cabine c : CabineSet )
+    {
+      if (s.enterers.contains(current) && current.atStation(s) && c == s.cabine) {
 
-    C1.persons.get(0).set(C1.x, C1.y);
+        s.persons.add(current);
+
+        c.mount(current);
+        s.enterers.remove(current  );
+        iter--;
+
+        c.persons.get(c.persons.size()-1).set(c.x, c.y);
+      }
+    }
   }
-  current.walk(x-current.anim_size/3, 1, sprite_size/3, sprite_size/3);
-  if (current.atStation(A)) {
-
-    return queue(x-current.anim_size/3, ++iter, queue);
+  int dir = (int)((x - current.x) /Math.abs((x-current.x)));
+  current.walk(x-current.anim_size/3, dir, sprite_size/3, sprite_size/3);
+  for (Station s : StationsSet) {
+    if (current.atStation(s)) {
+      return queue(x-current.anim_size/3, ++iter, queue);
+    }
   }
   return queue(x-current.anim_size/3, ++iter, queue);
 }
@@ -112,102 +126,130 @@ int queue(float x, int iter, ArrayList<Personne> queue) {
 
 void mousePressed() {
 
-  println(mouseX, mouseY);
+  //println(mouseX, mouseY);
+  //C2.set(mouseX, mouseY);
   // set actioin to add_person_button
   if (add_person_button.in()) {
-    //add sprite
-    A.persons.add(new Personne(sprites.get(0), sprite_size, null, A));
-    A.persons.get(A.persons.size()-1).idle = new Sprite(sprites.get(1), sprite_size);
-    A.persons.get(A.persons.size()-1).x = -sprite_size;
-    A.persons.get(A.persons.size()-1).y = A.y2-A.persons.get((A.persons.size()-1)).img.height;
-    A.persons.get(A.persons.size()-1).initPopUp();
-    A.persons.get(A.persons.size()-1).step_size =  (int) (A.persons.get(A.persons.size()-1).step_size/resize_factor) +2;
-    /*--------------*/
-    B.persons.add(new Personne(sprites.get(0), sprite_size, null, B));
-    B.persons.get(B.persons.size()-1).idle = new Sprite(sprites.get(1), sprite_size);
-    B.persons.get(B.persons.size()-1).x = -sprite_size;
-    B.persons.get(B.persons.size()-1).y = B.y2-B.persons.get((B.persons.size()-1)).img.height;
-    B.persons.get(B.persons.size()-1).initPopUp();
-    B.persons.get(B.persons.size()-1).step_size =  (int) (B.persons.get(B.persons.size()-1).step_size/resize_factor) +2;
-    /*--------------*/
-    C.persons.add(new Personne(sprites.get(0), sprite_size, null, C));
-    C.persons.get(C.persons.size()-1).idle = new Sprite(sprites.get(1), sprite_size);
-    C.persons.get(C.persons.size()-1).x = -sprite_size;
-    C.persons.get(C.persons.size()-1).y = C.y2-C.persons.get((C.persons.size()-1)).img.height;
-    C.persons.get(C.persons.size()-1).initPopUp();
-    C.persons.get(C.persons.size()-1).step_size =  (int) (C.persons.get(C.persons.size()-1).step_size/resize_factor) +2;
+    for (Station s : StationsSet) {
+      //add sprite
+      //println(s);
+      s.persons.add(new Personne(sprites.get(0), sprite_size, null, s));
+      s.persons.get(s.persons.size()-1).idle = new Sprite(sprites.get(1), sprite_size);
+      s.persons.get(s.persons.size()-1).set(-sprite_size, s.y2-s.persons.get((s.persons.size()-1)).img.height);
+      s.persons.get(s.persons.size()-1).initPopUp();
+      s.persons.get(s.persons.size()-1).step_size =  (int) (s.persons.get(s.persons.size()-1).step_size/resize_factor) +2;
+    }
   }
 
   // réadapter la fonction et la donner aux stations et les appeler pour chaque station
-  Iterator<Personne> it = A.persons.iterator();
-  while (it.hasNext()) {
-    Personne s = it.next();
-    //action to button
-    if (s.bubble.pop_up_elements.get(0).in()) {
-      s.buy(Titre_de_transport.Ticket);
-    }
-    if (s.bubble.pop_up_elements.get(1).in()) {
-      s.buy(Titre_de_transport.Subscription);
-    }
-    if (s.bubble.pop_up_elements.get(2).in()) {
-      s.shred();
-    }
-    if (s.bubble.pop_up_elements.get(3).in()) {
-      enterer.add(s);
-      it.remove();
-    }
+  for (Station S : StationsSet) {
+    Iterator<Personne> it = S.persons.iterator();
+    while (it.hasNext()) {
+      Personne s = it.next();
+      //action to button
+      if (s.bubble.pop_up_elements.get(0).in()) {
+        s.buy(Titre_de_transport.Ticket);
+      }
+      if (s.bubble.pop_up_elements.get(1).in()) {
+        s.buy(Titre_de_transport.Subscription);
+      }
+      if (s.bubble.pop_up_elements.get(2).in()) {
+        s.shred();
+      }
+      if (s.bubble.pop_up_elements.get(3).in()) {
+        s.x -= s.anim_size/3*S.enterers.size();
+        S.enterers.add(s);
+        it.remove();
+      }
 
 
-    // mask on click
-    if (!s.hitbox.in()) {
-      s.bubble.text = "";
-      s.bubble.show_pop_up = false;
-      s.hitbox.clickable = true;
-      for (UI e : s.bubble.pop_up_elements) {
+      // mask on click
+      if (!s.hitbox.in()) {
+        s.bubble.text = "";
+        s.bubble.show_pop_up = false;
+        s.hitbox.clickable = true;
+        for (UI e : s.bubble.pop_up_elements) {
+          e.clickable = false;
+        }
+      }
+      //show button on click
+      if (s.hitbox.in()) {
+        s.bubble.popUpMenu();
+        s.bubble.text = s.toString();
+        s.bubble.show_pop_up = true;
+        s.hitbox.clickable = false;
+        for (UI e : s.bubble.pop_up_elements) {
+          e.clickable = true;
+        }
+      }
+    }
+  }
+  for (Cabine c : CabineSet) {
+    Iterator<Personne> it2 = c.persons.iterator();
+    while (it2.hasNext()) {
+      Personne s = it2.next();
+      if (c.bubble.pop_up_elements.get(0).in()) {
+        c.dismount(s);
+      }
+    }
+    // go next station
+    if (c.bubble.pop_up_elements.get(1).in()) {
+      //println(c);
+      float[] a = C1.nextStation().cabinePos();
+
+      C1.set((int)a[0], (int) a[1]);
+      a = C2.nextStation().cabinePos();
+      C2.set((int)a[0], (int) a[1]);
+      C1.move(C1.nextStation());
+      C2.move(C2.nextStation());
+
+
+      //c.walk(100, 295, 1, c.step_size/3, c.step_size/3);
+      //println(c);
+      //println(c.previousStation());
+    }
+    //go previous station
+    if (c.bubble.pop_up_elements.get(2).in()) {
+      float[] a = C1.previousStation().cabinePos();
+
+      C1.set(a[0], a[1]);
+      a = C2.previousStation().cabinePos();
+      C2.set(a[0], a[1]);
+      //println(c);
+      C2.move(C2.previousStation());
+      C1.move(C1.previousStation());
+      //c.walk(100, 295, 1, c.step_size/3, c.step_size/3);
+      //println(c);
+    }
+
+    if (!c.hitbox.in()) {
+      c.bubble.text = "";
+
+      c.bubble.show_pop_up = false;
+      for (UI e : c.bubble.pop_up_elements) {
         e.clickable = false;
       }
     }
-    //show button on click
-    if (s.hitbox.in()) {
-      s.bubble.popUpMenu();
-      s.bubble.text = s.toString();
-      s.bubble.show_pop_up = true;
-      s.hitbox.clickable = false;
-      for (UI e : s.bubble.pop_up_elements) {
+    if (c.hitbox.in()) {
+      c.bubble.text = c.toString();
+      c.bubble.show_pop_up = true;
+      for (UI e : c.bubble.pop_up_elements) {
         e.clickable = true;
       }
     }
   }
 
-  Iterator<Personne> it2 = C1.persons.iterator();
-  while (it2.hasNext()) {
-    Personne s = it2.next();
-    if (C1.bubble.pop_up_elements.get(0).in()) {
-      C1.dismount(s);
-    }
-  }
-
-  if (C1.bubble.pop_up_elements.get(1).in()) {
-    println(C1);
-    C1.move(C1.nextStation());
-    C1.walk(100, 295, 1, C1.step_size/3, C1.step_size/3);
-    println(C1);
-  }
-  if (C1.bubble.pop_up_elements.get(2).in()) {
-    println(C1);
-    C1.move(C1.previousStation());
-    C1.walk(100, 295, 1, C1.step_size/3, C1.step_size/3);
-    println(C1);
-  }
-
   if (debug.in()) {
+    run = !run;
     debug_mode = !debug_mode;
-  }
-  if (!C1.hitbox.in()) {
-    C1.bubble.show_pop_up = false;
-  }
-  if (C1.hitbox.in()) {
-    C1.bubble.show_pop_up = true;
+
+    println("debug mode : ");
+    for (Station s : StationsSet) {
+      println(s.toString());
+    }
+    for (Cabine s : CabineSet) {
+      println(s.toString());
+    }
   }
 }
 
@@ -215,7 +257,7 @@ void mousePressed() {
 void draw() {
   //Background
   image(bg, 0, 0);
-  rect(0, 0, width, height);
+  //rect(0, 0, width, height);
   A.draw();
   B.draw();
   C.draw();
@@ -223,32 +265,68 @@ void draw() {
 
   //ForeGround
   //faire la file
-  A.iter = queue(A.x1+ A.img.width*0.26, A.iter, A.persons);
-  B.iter = queue(B.x1+ B.img.width*0.26, B.iter, B.persons);
-  C.iter = queue(C.x1+ C.img.width*0.26, C.iter, C.persons);
-  iter_on_enterer = queue(A.x1 + A.img.width*0.26, iter_on_enterer, enterer);
+  for (Station s : StationsSet) {
+    s.iter = queue(s.x1+ s.img.width*0.26, s.iter, s.persons);
+    s.jter = queue(s.x1 + s.img.width*0.26, s.jter, s.enterers);
+  }
+
 
 
   //UI
   add_person_button.draw(20);
   debug.draw(20);
-  for (Personne s : A.persons) {
-    //show information bubble
-    s.bubble.draw(15);
-    // show action menu
-    if (s.bubble.show_pop_up) {
-      s.bubble.popUpMenu();
+  for (Station s : StationsSet) {
+    for (Personne p : s.persons) {
+      p.bubble.draw(15);
+      if (p.bubble.show_pop_up) {
+        p.bubble.popUpMenu();
+      }
     }
   }
 
+  for (Cabine c : CabineSet) {
+    for (Personne p : c.persons) {
+      p.set(c.x, c.y);
+      p.idle.anime(1);
+    }
+    c.bubble.draw(15);
 
-  for (Personne p : C1.persons) {
-    p.set(C1.x, C1.y);
-    p.idle.anime(1);
+    if (c.bubble.show_pop_up) {
+      c.bubble.popUpMenu();
+    }
+    c.idle.anime(1);
   }
-  if (C1.bubble.show_pop_up) {
-    C1.bubble.popUpMenu();
+
+  if (false/*debug_mode*/) {
+    for (Station s : StationsSet) {
+      if (s.clickable) {
+        s.draw(0);
+      }
+      for (Personne p : s.persons) {
+        for (UI e : p.bubble.pop_up_elements) {
+          if (e.clickable) {
+            e.draw();
+          }
+        }
+      }
+    }
+    for (Cabine c : CabineSet) {
+      c.hitbox.draw(0);
+
+      for (UI e : c.bubble.pop_up_elements) {
+        if (e.clickable) {
+          e.draw();
+        }
+      }
+    }
   }
-  C1.idle.anime(1);
+  C1.anime(1);
+  C2.anime(1);
+  if (run) {
+    a = B.cabinePos();
+    C1.walk(a[0], a[1], 1, C1.step_size/3, C1.step_size/3);
+    a = A.cabinePos();
+    C2.walk(a[0], a[1], 1, C2.step_size/3, C2.step_size/3);
+  }
 }
 // selection de l'action en faisant des randoms sur si la précondition est vérifiée ou pas dans une liste précise et pas tous pour ne pas perdre des ressources inutillements

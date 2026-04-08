@@ -3,13 +3,16 @@ import java.util.ArrayList;
 public class Station extends HitBox {
   char Id = '\0';
   ArrayList<Personne> persons;
-  Cabine cabine;
   int iter;
+  ArrayList<Personne> enterers;
+  int jter;
+  Cabine cabine;
   PImage img;
 
   Station(char id, Cabine c, float size, PImage img) {
     super(0, 0, size, size);
     iter = 0;
+    jter = 0;
     boolean cabineValid = true;
     int i = 0;
     this.img = img;
@@ -30,15 +33,22 @@ public class Station extends HitBox {
       this.Id = id;
       this.cabine = c;
       this.persons = new ArrayList<Personne>();
+      this.enterers = new ArrayList<Personne>();
+    } else {
+      println("Station(char id, Cabine c, float size) : \'id\' must be in {'A', 'B', 'C'} and \'Cabine\' must be null or in {'1','2'}");
     }
   }
 
   @Override
     public String toString() {
+    char cab;
     if (this.cabine == null) {
-      return "this.cabine == null";
+      cab = '/';
+    } else {
+      cab = this.cabine.Id;
     }
-    return String.format("Station %c >> Cabine n°%c | Persons : %d", this.Id, this.cabine.Id, this.count());
+
+    return String.format("Station { id: %c, Cabine n°%s, Persons : %d }", this.Id, cab, this.count());
   }
 
 
@@ -80,5 +90,12 @@ public class Station extends HitBox {
 
   public void draw() {
     image(this.img, this.x1, this.y1);
+  }
+
+  float[] cabinePos() {
+    float pos[] = new float[2];
+    pos[0] = this.x1+this.img.width*0.65;
+    pos[1] = this.y1+this.img.height*0.2;
+    return pos;
   }
 }
