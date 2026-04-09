@@ -6,17 +6,21 @@ ArrayList<PImage> sprites = new ArrayList<PImage>();
 
 UI add_person_button, debug;
 PImage bg, station, cabine, cabine_idle;
-boolean run = false;
 
 int sprite_size = 0;
-float resize_factor = 2;
+float resize_factor = 1;
 // logique métier
 Cabine C1, C2;
 Station A, B, C;
-Station StationsSet[];
-Cabine CabineSet[];
+Personne to_remove ;
+
+ArrayList<Cabine> CabineSet = new ArrayList<Cabine>();
+
+ArrayList<Station> StationsSet = new ArrayList<Station>();
 boolean debug_mode = false;
+
 float[] a;
+float[] b;
 
 
 
@@ -39,7 +43,7 @@ void setup() {
 
   bg = loadImage("assets/nature_3/origbig.png");
   station = loadImage("assets/nature_3/Stations.png");
-  cabine = loadImage("assets/téléphérique/cabine-Sheet.png");
+  cabine = loadImage("assets/téléphérique/cabine1.png");
   cabine_idle = loadImage("assets/téléphérique/cabine1.png");
 
   //resizing
@@ -74,16 +78,20 @@ void setup() {
 
   A.set(width-station.width-200, height-station.height, width-200, height);
   B.set(0, height/2 - station.height/2, station.width, height/2 - station.height/2+station.height);
-  C.set(width-station.width-200, 0, width-200, station.height);
+  C.set(width-station.width-200, 0-station.height*0.3, width-200, station.height-station.height*0.3);
 
   a = C1.position.cabinePos();
   C1.set(a[0], a[1]);
   a = C2.position.cabinePos();
-  a = B.cabinePos();
+  //a = B.cabinePos();
   C2.set(a[0], a[1]);
 
-  StationsSet = new Station[]{A, B, C};
-  CabineSet = new Cabine[]{C1, C2};
+  StationsSet.add(A);
+  StationsSet.add(B);
+  StationsSet.add(C);
+
+  CabineSet.add(C1);
+  CabineSet.add(C2);
 
   // fix positions
   sprite_size = sprites.get(0).height;
@@ -100,7 +108,7 @@ int queue(float x, int iter, ArrayList<Personne> queue) {
   for (Station s : StationsSet) {
     for (Cabine c : CabineSet )
     {
-      if (s.enterers.contains(current) && current.atStation(s) && c == s.cabine) {
+      if (s.enterers.contains(current) && current.atStation(s) && c == s.cabine && c.atStation(s)) {
 
         s.persons.add(current);
 
@@ -112,8 +120,11 @@ int queue(float x, int iter, ArrayList<Personne> queue) {
       }
     }
   }
+
   int dir = (int)((x - current.x) /Math.abs((x-current.x)));
-  current.walk(x-current.anim_size/3, dir, sprite_size/3, sprite_size/3);
+
+  current.walk(x-current.anim_size/3, current.y, dir, sprite_size/3, sprite_size/3);
+
   for (Station s : StationsSet) {
     if (current.atStation(s)) {
       return queue(x-current.anim_size/3, ++iter, queue);
@@ -142,10 +153,12 @@ void mousePressed() {
   }
 
   // réadapter la fonction et la donner aux stations et les appeler pour chaque station
-  for (Station S : StationsSet) {
-    Iterator<Personne> it = S.persons.iterator();
-    while (it.hasNext()) {
-      Personne s = it.next();
+  Iterator<Station> it0 = StationsSet.iterator();
+  while (it0.hasNext()) {
+    Station S = it0.next();
+    Iterator<Personne> it1 = S.persons.iterator();
+    while (it1.hasNext()) {
+      Personne s = it1.next();
       //action to button
       if (s.bubble.pop_up_elements.get(0).in()) {
         s.buy(Titre_de_transport.Ticket);
@@ -159,7 +172,7 @@ void mousePressed() {
       if (s.bubble.pop_up_elements.get(3).in()) {
         s.x -= s.anim_size/3*S.enterers.size();
         S.enterers.add(s);
-        it.remove();
+        it1.remove();
       }
 
 
@@ -184,12 +197,15 @@ void mousePressed() {
       }
     }
   }
-  for (Cabine c : CabineSet) {
-    Iterator<Personne> it2 = c.persons.iterator();
-    while (it2.hasNext()) {
-      Personne s = it2.next();
-      if (c.bubble.pop_up_elements.get(0).in()) {
-        c.dismount(s);
+
+  Iterator<Cabine> it2 = CabineSet.iterator();
+  while (it2.hasNext()) {
+    Cabine c = it2.next();
+    Iterator<Personne> it3 = c.persons.iterator();
+    while (it3.hasNext()) {
+      Personne s = it3.next();
+      if (c.bubble.pop_up_elements.get(0).in() && !c.animation) {
+        to_remove = s;
       }
     }
     // go next station
@@ -197,12 +213,14 @@ void mousePressed() {
       //println(c);
       float[] a = C1.nextStation().cabinePos();
 
-      C1.set((int)a[0], (int) a[1]);
+      //C1.set((int)a[0], (int) a[1]);
       a = C2.nextStation().cabinePos();
-      C2.set((int)a[0], (int) a[1]);
+      //C2.set((int)a[0], (int) a[1]);
       C1.move(C1.nextStation());
       C2.move(C2.nextStation());
 
+      C1.animation = true;
+      C2.animation = true;
 
       //c.walk(100, 295, 1, c.step_size/3, c.step_size/3);
       //println(c);
@@ -212,12 +230,14 @@ void mousePressed() {
     if (c.bubble.pop_up_elements.get(2).in()) {
       float[] a = C1.previousStation().cabinePos();
 
-      C1.set(a[0], a[1]);
+      //C1.set(a[0], a[1]);
       a = C2.previousStation().cabinePos();
-      C2.set(a[0], a[1]);
+      //C2.set(a[0], a[1]);
       //println(c);
       C2.move(C2.previousStation());
       C1.move(C1.previousStation());
+      C1.animation = true;
+      C2.animation = true;
       //c.walk(100, 295, 1, c.step_size/3, c.step_size/3);
       //println(c);
     }
@@ -240,7 +260,6 @@ void mousePressed() {
   }
 
   if (debug.in()) {
-    run = !run;
     debug_mode = !debug_mode;
 
     println("debug mode : ");
@@ -266,8 +285,8 @@ void draw() {
   //ForeGround
   //faire la file
   for (Station s : StationsSet) {
-    s.iter = queue(s.x1+ s.img.width*0.26, s.iter, s.persons);
-    s.jter = queue(s.x1 + s.img.width*0.26, s.jter, s.enterers);
+    s.iter = queue(s.portePos()[0], s.iter, s.persons);
+    s.jter = queue(s.portePos()[0], s.jter, s.enterers);
   }
 
 
@@ -277,7 +296,8 @@ void draw() {
   debug.draw(20);
   for (Station s : StationsSet) {
     for (Personne p : s.persons) {
-      p.bubble.draw(15);
+      if (p.bubble.text != "")
+        p.bubble.draw(15);
       if (p.bubble.show_pop_up) {
         p.bubble.popUpMenu();
       }
@@ -289,18 +309,23 @@ void draw() {
       p.set(c.x, c.y);
       p.idle.anime(1);
     }
-    c.bubble.draw(15);
+    if (c.bubble.text != "")
+      c.bubble.draw(15);
 
     if (c.bubble.show_pop_up) {
       c.bubble.popUpMenu();
     }
-    c.idle.anime(1);
+    if (c.animation) {
+      c.walk(c.position);
+    } else {
+      c.idle.anime(1);
+    }
   }
 
-  if (false/*debug_mode*/) {
+  if (debug_mode) {
     for (Station s : StationsSet) {
       if (s.clickable) {
-        s.draw(0);
+        s.draw(10);
       }
       for (Personne p : s.persons) {
         for (UI e : p.bubble.pop_up_elements) {
@@ -308,10 +333,11 @@ void draw() {
             e.draw();
           }
         }
+        p.hitbox.draw(1);
       }
     }
     for (Cabine c : CabineSet) {
-      c.hitbox.draw(0);
+      c.hitbox.draw(10);
 
       for (UI e : c.bubble.pop_up_elements) {
         if (e.clickable) {
@@ -320,13 +346,15 @@ void draw() {
       }
     }
   }
-  C1.anime(1);
-  C2.anime(1);
-  if (run) {
-    a = B.cabinePos();
-    C1.walk(a[0], a[1], 1, C1.step_size/3, C1.step_size/3);
-    a = A.cabinePos();
-    C2.walk(a[0], a[1], 1, C2.step_size/3, C2.step_size/3);
+  Iterator<Cabine> it0 = CabineSet.iterator();
+  while (it0.hasNext()) {
+    Cabine n = it0.next();
+    if (to_remove != null && n.persons.contains(to_remove)) {
+      n.dismount(to_remove);
+      to_remove.y = to_remove.station.portePos()[1]-to_remove.img.height;
+      to_remove.x = to_remove.station.portePos()[0]-to_remove.anim_size/3;
+    }
   }
+  to_remove = null;
 }
 // selection de l'action en faisant des randoms sur si la précondition est vérifiée ou pas dans une liste précise et pas tous pour ne pas perdre des ressources inutillements

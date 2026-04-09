@@ -6,7 +6,8 @@ public class Cabine extends Sprite {
   // Id appartient à {'1','2'}
   char Id;
   ArrayList<Personne> persons;
-
+  ArrayList<Personne> outers;
+  boolean animation;
   Cabine(char id, PImage img, int a_s) throws InitialisationException {
     super(img, a_s);
     char[] ids = { '1', '2' };
@@ -20,6 +21,7 @@ public class Cabine extends Sprite {
 
       this.Id = id;
       this.persons = new ArrayList<Personne>();
+      this.animation = false;
     } else {
       throw new InitialisationException("\'id\' must be in {'1','2'}");
     }
@@ -43,6 +45,7 @@ public class Cabine extends Sprite {
       this.position = pos;
       this.Id = id;
       this.persons = new ArrayList<Personne>();
+      this.animation = false;
     } else {
       throw new InitialisationException("\'position\' must be in {'A', 'B', 'C'} and \'id\' in {'1','2'}");
     }
@@ -166,10 +169,40 @@ public class Cabine extends Sprite {
   }
 
   boolean atStation(Station station) {
-    return (station.x1+station.img.width*0.65 <= this.x+this.anim_size/2
-      && this.x+this.anim_size/2 <= station.x1+station.img.width*0.85
-      && station.y1 + station.img.height*0.2 <= this.y+this.img.height/2
-      && this.y+this.img.height/2 <= station.y1 + station.img.height*0.56
+    a = station.cabinePos();
+    println(String.format(
+      "[atStation debug]\n" +
+      "  x: %.1f <= %.1f <= %.1f  →  %b\n" +
+      "  y: %.1f <= %.1f <= %.1f  →  %b\n" +
+      "  => atStation = %b",
+      a[0], this.x + this.anim_size/2f, a[0] + this.getAnimationLength(),
+      a[0] <= this.x + this.anim_size/2f && this.x + this.anim_size/2f <= a[0] + this.getAnimationLength(),
+      a[1], this.y + this.img.height/2f, a[1] + this.img.height,
+      a[1] <= this.y + this.img.height/2f && this.y + this.img.height/2f <= a[1] + this.img.height,
+      (a[0] <= this.x + this.anim_size/2f && this.x + this.anim_size/2f <= a[0] + this.getAnimationLength())
+      && (a[1] <= this.y + this.img.height/2f && this.y + this.img.height/2f <= a[1] + this.img.height)
+      ));
+    return (
+      a[0] <= this.x+this.anim_size/2
+      && this.x+this.anim_size/2 <= a[0] + this.anim_size
+      && a[1] <= this.y+this.img.height/2
+      && this.y+this.img.height/2 <= a[1] + this.anim_size
       );
+  }
+  void walk(Station end) {
+    b = end.cabinePos();
+    float d = dist(this.x, this.y, b[0], b[1]);
+    if (this.atStation(end)) {
+      // déjà arrivé, snap direct
+      this.set(b[0], b[1]);
+      this.idle.anime(1);
+      this.animation = false;
+    } else {
+      this.anime(1);
+      this.set(
+        lerp(this.x, b[0], this.step_size / d),
+        lerp(this.y, b[1], this.step_size / d)
+        );
+    }
   }
 }

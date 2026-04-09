@@ -94,8 +94,15 @@ public class Station extends HitBox {
 
   float[] cabinePos() {
     float pos[] = new float[2];
-    pos[0] = this.x1+this.img.width*0.65;
-    pos[1] = this.y1+this.img.height*0.2;
+    pos[0] = this.x1+this.img.width*0.6;
+    pos[1] = this.y1+this.img.height*0.5;
+    return pos;
+  }
+
+  float[] portePos() {
+    float pos[] = new float[2];
+    pos[0] = this.x1+this.img.width*0.26;
+    pos[1] = this.y2;
     return pos;
   }
 }
