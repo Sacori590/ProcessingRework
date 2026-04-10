@@ -170,18 +170,18 @@ public class Cabine extends Sprite {
 
   boolean atStation(Station station) {
     a = station.cabinePos();
-    println(String.format(
-      "[atStation debug]\n" +
-      "  x: %.1f <= %.1f <= %.1f  →  %b\n" +
-      "  y: %.1f <= %.1f <= %.1f  →  %b\n" +
-      "  => atStation = %b",
-      a[0], this.x + this.anim_size/2f, a[0] + this.getAnimationLength(),
-      a[0] <= this.x + this.anim_size/2f && this.x + this.anim_size/2f <= a[0] + this.getAnimationLength(),
-      a[1], this.y + this.img.height/2f, a[1] + this.img.height,
-      a[1] <= this.y + this.img.height/2f && this.y + this.img.height/2f <= a[1] + this.img.height,
-      (a[0] <= this.x + this.anim_size/2f && this.x + this.anim_size/2f <= a[0] + this.getAnimationLength())
-      && (a[1] <= this.y + this.img.height/2f && this.y + this.img.height/2f <= a[1] + this.img.height)
-      ));
+    /*println(String.format(
+     "[atStation debug]\n" +
+     "  x: %.1f <= %.1f <= %.1f  →  %b\n" +
+     "  y: %.1f <= %.1f <= %.1f  →  %b\n" +
+     "  => atStation = %b",
+     a[0], this.x + this.anim_size/2f, a[0] + this.getAnimationLength(),
+     a[0] <= this.x + this.anim_size/2f && this.x + this.anim_size/2f <= a[0] + this.getAnimationLength(),
+     a[1], this.y + this.img.height/2f, a[1] + this.img.height,
+     a[1] <= this.y + this.img.height/2f && this.y + this.img.height/2f <= a[1] + this.img.height,
+     (a[0] <= this.x + this.anim_size/2f && this.x + this.anim_size/2f <= a[0] + this.getAnimationLength())
+     && (a[1] <= this.y + this.img.height/2f && this.y + this.img.height/2f <= a[1] + this.img.height)
+     ));*/
     return (
       a[0] <= this.x+this.anim_size/2
       && this.x+this.anim_size/2 <= a[0] + this.anim_size

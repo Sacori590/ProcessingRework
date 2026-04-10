@@ -29,8 +29,13 @@ public class Sprite {
     this.idle.x = x;
     this.idle.y = y;
     this.hitbox.set(x, y, x+this.anim_size, y+this.anim_size);
-    this.bubble.set(x - (int) (textWidth(this.bubble.text)/2)+anim_size/2, y, x+this.anim_size, y+20);
+    this.bubble.set(x - (int) (textWidth(this.bubble.text)/2)+anim_size/2, y-80, x+this.anim_size, y-60);
   }
+  void setSprite(PImage run, PImage idle) {
+    this.idle.img = idle;
+    this.img = run;
+  }
+
   void anime(int dir) {
     //permet de lire l'animation d'un sprite
     int a_s = this.anim_size;

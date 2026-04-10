@@ -27,6 +27,7 @@ public class UI extends HitBox {
       ele.yoffset = 20;
       ele.x2 = ele.x1 + ele.xoffset;
       ele.y2 = ele.y1 + ele.yoffset;
+
       ele.draw(30);
       i++;
     }
