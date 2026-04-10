@@ -8,7 +8,7 @@ UI add_person_button, debug;
 PImage bg, station, cabine, cabine_idle;
 
 int sprite_size = 0;
-float resize_factor = 4;
+float resize_factor = 2;
 // logique métier
 Cabine C1, C2;
 Station A, B, C;
@@ -20,7 +20,6 @@ ArrayList<Station> StationsSet = new ArrayList<Station>();
 boolean debug_mode = false;
 
 float[] a;
-float[] b;
 
 
 
@@ -29,7 +28,7 @@ void setup() {
   pixelDensity(1);
   size(768, 576);
   frameRate(30);
-  //fullScreen();
+  fullScreen();
 
 
   // initialisation des sprites
@@ -284,33 +283,22 @@ void mousePressed() {
 void draw() {
   //Background
   image(bg, 0, 0);
-  //rect(0, 0, width, height);
+  fill(100, 0, 0);
+
+  rect(0, A.y2 - A.img.height*0.06, width, A.img.height*0.07);
+  rect(0, B.y2 - B.img.height*0.06, width, B.img.height*0.07);
+  rect(0, C.y2 - C.img.height*0.06, width, C.img.height*0.07);
+  fill(255, 155, 0);
   A.draw();
   B.draw();
   C.draw();
 
 
   //ForeGround
-  //faire la file
-  for (Station s : StationsSet) {
-    s.iter = queue(s.portePos()[0], s.iter, s.persons);
-    s.jter = queue(s.portePos()[0], s.jter, s.enterers);
-  }
-
-
 
   //UI
   add_person_button.draw(20);
   debug.draw(20);
-  for (Station s : StationsSet) {
-    for (Personne p : s.persons) {
-      if (p.bubble.text != "")
-        p.bubble.draw(15);
-      if (p.bubble.show_pop_up) {
-        p.bubble.popUpMenu();
-      }
-    }
-  }
 
   for (Cabine c : CabineSet) {
     for (Personne p : c.persons) {
@@ -329,12 +317,30 @@ void draw() {
       c.idle.anime(1);
     }
   }
+  for (Station s : StationsSet) {
+    //animation pour aller dans la file de la station
+    s.iter = queue(s.portePos()[0], s.iter, s.persons);
+    //animation pour se diriger à la station
+    s.jter = queue(s.portePos()[0], s.jter, s.enterers);
+  }
+  for (Station s : StationsSet) {
+    for (Personne current : s.persons) {
+      if (current.bubble.text != "")
+        current.bubble.draw(15);
+      if (current.bubble.show_pop_up) {
+        current.bubble.popUpMenu();
+      }
+    }
+  }
+
+  /* --------------------- DEBUG MODE --------------------- */
 
   if (debug_mode) {
+    noFill();
+    stroke(0, 200, 0);
+    strokeWeight(10);
+
     for (Station s : StationsSet) {
-      if (s.clickable) {
-        s.draw(10);
-      }
       for (Personne p : s.persons) {
         for (UI e : p.bubble.pop_up_elements) {
           if (e.clickable) {
@@ -344,19 +350,23 @@ void draw() {
         p.hitbox.draw(1);
       }
     }
+
     for (Cabine c : CabineSet) {
       c.hitbox.draw(10);
-
       for (UI e : c.bubble.pop_up_elements) {
         if (e.clickable) {
           e.draw();
         }
       }
     }
+    noStroke();
+    fill(255, 155, 0);
   }
-  Iterator<Cabine> it0 = CabineSet.iterator();
-  while (it0.hasNext()) {
-    Cabine n = it0.next();
+
+  /* ------------------------------------------------------ */
+
+  //Iterator<Cabine> it0 = CabineSet.iterator();
+  for (Cabine n : CabineSet) {
     if (to_remove != null && n.persons.contains(to_remove)) {
       n.dismount(to_remove);
       to_remove.y = to_remove.station.portePos()[1]-to_remove.img.height;

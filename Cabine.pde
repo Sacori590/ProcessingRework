@@ -190,18 +190,18 @@ public class Cabine extends Sprite {
       );
   }
   void walk(Station end) {
-    b = end.cabinePos();
-    float d = dist(this.x, this.y, b[0], b[1]);
+    a = end.cabinePos();
+    float d = dist(this.x, this.y, a[0], a[1]);
     if (this.atStation(end)) {
       // déjà arrivé, snap direct
-      this.set(b[0], b[1]);
+      this.set(a[0], a[1]);
       this.idle.anime(1);
       this.animation = false;
     } else {
       this.anime(1);
       this.set(
-        lerp(this.x, b[0], this.step_size / d),
-        lerp(this.y, b[1], this.step_size / d)
+        lerp(this.x, a[0], this.step_size / d),
+        lerp(this.y, a[1], this.step_size / d)
         );
     }
   }

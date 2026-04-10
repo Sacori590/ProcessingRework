@@ -29,7 +29,7 @@ public class Sprite {
     this.idle.x = x;
     this.idle.y = y;
     this.hitbox.set(x, y, x+this.anim_size, y+this.anim_size);
-    this.bubble.set(x - (int) (textWidth(this.bubble.text)/2)+anim_size/2, y-80, x+this.anim_size, y-60);
+    this.bubble.set(x - (int) (textWidth(this.bubble.text)/2)+this.anim_size/2, y-40, x+this.anim_size, y-20);
   }
   void setSprite(PImage run, PImage idle) {
     this.idle.img = idle;

@@ -21,12 +21,14 @@ public class UI extends HitBox {
     }
     int i = 0;
     for (UI ele : this.pop_up_elements) {
-      ele.x1 = this.x2 + 15;
-      ele.y1 = this.y1 + 25 * i;
-      ele.xoffset = (int) textWidth(ele.text) + 15;
-      ele.yoffset = 20;
-      ele.x2 = ele.x1 + ele.xoffset;
-      ele.y2 = ele.y1 + ele.yoffset;
+
+      /*ele.x1 = this.x2 + 15;
+       ele.y1 = this.y1 + 25 * i;
+       ele.xoffset = (int) textWidth(ele.text) + 15;
+       ele.yoffset = 20;
+       ele.x2 = ele.x1 + ele.xoffset;
+       ele.y2 = ele.y1 + ele.yoffset;*/
+      ele.set(this.x2+15, this.y1+25*i, this.x2+15 + textWidth(ele.text) + 15, this.y1+25*i +20);
 
       ele.draw(30);
       i++;
@@ -35,9 +37,7 @@ public class UI extends HitBox {
 
 
   public void draw(int radius) {
-
-    this.xoffset = (int) textWidth(this.text);
-    this.x2 = this.x1+ this.xoffset;
+    this.set(this.x1, this.y1, this.x1+textWidth(this.text), this.y2);
     fill(0, 0, 0);
     super.draw(30);
     fill(255, 155, 0);
