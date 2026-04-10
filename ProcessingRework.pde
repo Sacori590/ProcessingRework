@@ -115,10 +115,9 @@ int queue(float x, int iter, ArrayList<Personne> queue) {
         s.persons.add(current);
 
         c.mount(current);
-        s.enterers.remove(current  );
+        s.enterers.remove(current);
         iter--;
-
-        c.persons.get(c.persons.size()-1).set(c.x, c.y);
+        c.persons.get(c.persons.size()-1).set(c.personsPosition(current), c.y);
       }
     }
   }
@@ -315,7 +314,7 @@ void draw() {
 
   for (Cabine c : CabineSet) {
     for (Personne p : c.persons) {
-      p.set(c.x, c.y);
+      p.set(c.personsPosition(p), c.y);
       p.idle.anime(1);
     }
     if (c.bubble.text != "")
@@ -362,7 +361,8 @@ void draw() {
       n.dismount(to_remove);
       to_remove.y = to_remove.station.portePos()[1]-to_remove.img.height;
       to_remove.x = to_remove.station.portePos()[0]-to_remove.anim_size/3;
-      to_remove.setSprite(sprites.get(0), sprites.get(1));
+      if (to_remove.titre == Titre_de_transport.None)
+        to_remove.setSprite(sprites.get(0), sprites.get(1));
       to_remove = null;
     }
   }

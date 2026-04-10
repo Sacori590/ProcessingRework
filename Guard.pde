@@ -2,7 +2,9 @@ import java.util.ArrayList;
 
 public static class Guard {
   public static boolean mount(Personne person, Station station) {
-    boolean sas = true;
+    if (station.cabine.count() >3 ) {
+      return false;
+    }
     if (person.titre == Titre_de_transport.Ticket) {
       for (Personne p : station.persons) {
         if (p.titre == Titre_de_transport.Subscription) {

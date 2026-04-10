@@ -205,4 +205,8 @@ public class Cabine extends Sprite {
         );
     }
   }
+  float personsPosition(Personne p) {
+
+    return this.x -p.anim_size/5+ this.anim_size/8*this.persons.indexOf(p);
+  }
 }
