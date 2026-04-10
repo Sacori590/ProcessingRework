@@ -4,20 +4,21 @@ import java.util.Arrays;
 ArrayList<PImage> sprites = new ArrayList<PImage>();
 
 
-UI add_person_button, debug;
+UI add_person_button, debug, station_is_moving, move_a_station;
 PImage bg, station, station2, station3, station4, station5, cabine, cabine_idle, cable;
 
 int sprite_size = 0;
 float resize_factor = 2;
 // logique métier
 Cabine C1, C2;
-Station A, B, C;
+Station A, B, C, moving;
 Personne to_remove ;
 
 ArrayList<Cabine> CabineSet = new ArrayList<Cabine>();
 
 ArrayList<Station> StationsSet = new ArrayList<Station>();
 boolean debug_mode = false;
+boolean move_station = true;
 
 float[] a;
 
@@ -44,10 +45,10 @@ void setup() {
   pixelDensity(1);
   size(768, 576);
   frameRate(30);
-  //fullScreen();
+  fullScreen();
   noSmooth();
 
-  windowResizable(true);
+  //windowResizable(true);
 
 
   // initialisation des sprites
@@ -95,9 +96,9 @@ void setup() {
   C2.initPopUp();
 
 
-  A.set(width-station.width-(int) textWidth("Move to previous station                  "), height-station.height, width-(int) textWidth("Mot to previous station"), height);
-  B.set(0, height/2 - station.height/2, station.width, height/2 - station.height/2+station.height);
-  C.set(width-station.width-400, 0-station.height*0.3, width-400, station.height-station.height*0.3);
+  A.set(width-station.width-200, height-station.height, width-200, height);
+  B.set(0, height-station.height-25, station.width, height-25);
+  C.set(width-station.width-400, height/2-station.height*0.3, width-400, height/2+station.height-station.height*0.3);
 
   a = C1.position.cabinePos();
   C1.set(a[0], a[1]);
@@ -116,7 +117,9 @@ void setup() {
   // fix positions
   sprite_size = sprites.get(0).height;
   add_person_button = new UI(10, 130, 30, 150, "Ajouter une personne");
-  debug = new UI(10, 160, 30, 180, "assign me anything");
+  debug = new UI(10, 160, 30, 180, "Afficher les Hitbox des éléments");
+  move_a_station = new UI(10, 190, 30, 210, "Déplacement des stations");
+  station_is_moving = new UI(0, 0, 0, 0);
 }
 
 int queue(float x, int iter, ArrayList<Personne> queue) {
@@ -154,9 +157,12 @@ int queue(float x, int iter, ArrayList<Personne> queue) {
   }
 
   int dir = (int)((x - current.x) /Math.abs((x-current.x)));
-
-  current.walk(x-current.anim_size/3, current.y, dir, sprite_size/3, sprite_size/3);
-
+  try {
+    current.walk(x-current.anim_size/3, current.station.y2-current.img.height, dir, sprite_size/3, sprite_size/3);
+  }
+  catch(Exception e) {
+    current.walk(x-current.anim_size/3, current.cabine.position.y2-current.img.height, dir, sprite_size/3, sprite_size/3);
+  }
   for (Station s : StationsSet) {
     if (current.atStation(s)) {
       return queue(x-current.anim_size/3, ++iter, queue);
@@ -172,6 +178,8 @@ void mousePressed() {
   //println(mouseX, mouseY);
   //C2.set(mouseX, mouseY);
   // set actioin to add_person_button
+  if (move_a_station.in())
+    move_station =!move_station;
   if (add_person_button.in()) {
     for (Station s : StationsSet) {
       //add sprite
@@ -229,6 +237,22 @@ void mousePressed() {
         s.bubble.text = s.toString();
       }
     }
+  }
+  if (move_station) {
+    for (Station s : StationsSet) {
+      if (moving != null) {
+        moving.set(mouseX, mouseY-station.height, mouseX+station.width, mouseY);
+        moving =null;
+        break;
+      }
+
+      if ((s.cabine == null ||  !s.cabine.hitbox.in() ) && s.in()) {
+        moving = s;
+        break;
+      }
+    }
+  } else {
+    moving = null;
   }
 
   Iterator<Cabine> it2 = CabineSet.iterator();
@@ -322,8 +346,6 @@ void draw() {
   //ForeGround
 
   //UI
-  add_person_button.draw(20);
-  debug.draw(20);
   for (Station s : StationsSet) {
     //animation pour aller dans la file de la station
     s.iter = queue(s.portePos()[0], s.iter, s.persons);
@@ -347,9 +369,9 @@ void draw() {
       c.bubble.popUpMenu();
     }
     c.walk(c.position);
-    image(station3, A.x1, A.y1);
-    image(station3, B.x1, B.y1);
-    image(station3, C.x1, C.y1);
+    if (!c.animation) {
+      image(station3, c.position.x1, c.position.y1);
+    }
   }
 
 
@@ -362,6 +384,7 @@ void draw() {
     strokeWeight(10);
 
     for (Station s : StationsSet) {
+      s.draw(1);
       for (Personne p : s.persons) {
         for (UI e : p.bubble.pop_up_elements) {
           if (e.clickable) {
@@ -407,5 +430,15 @@ void draw() {
   image(station4, A.x1, A.y1);
   image(station4, B.x1, B.y1);
   image(station4, C.x1, C.y1);
+  if (moving !=null && move_station) {
+    station_is_moving.text =String.format("you are moving the station %c", moving.Id);
+    station_is_moving.set(mouseX+10, mouseY, 0, mouseY+20);
+    station_is_moving.draw(10);
+  }
+
+  add_person_button.draw(20);
+  debug.draw(20);
+  move_a_station.text = String.format("déplacement des stations : %b", move_station);
+  move_a_station.draw(20);
 }
 // selection de l'action en faisant des randoms sur si la précondition est vérifiée ou pas dans une liste précise et pas tous pour ne pas perdre des ressources inutillements
