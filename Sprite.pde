@@ -67,3 +67,35 @@ public class Sprite {
     return this.img.width / anim_size;
   }
 }
+
+
+
+
+for (s : StationsSet) {
+  for (p : s.persons) {
+
+    if (p.bubble.text != "") {
+      p.bubble.draw(15);
+      p.bubble.show_pop_up = true;
+      p.hitbox.clickable = false;
+      for (UI e : p.bubble.pop_up_elements) {
+        e.clickable = true;
+      }
+    }
+    if (p.bubble.show_pop_up) {
+      p.bubble.popUpMenu();
+    }
+
+    if (s.enterers.contains(p) && p.atStation(s) && s.cabine != null) {
+      if (s.cabine.atStation(s)) {
+        s.persons.add(p);
+
+        c.mount(p);
+        s.enterers.remove(p);
+        iter--;
+        c.persons.get(c.persons.size()-1).set(c.personsPosition(p), c.y);
+      }
+    }
+    current.walk(x-current.anim_size/3*s.count+1, current.y, dir, sprite_size/3, sprite_size/3);
+  }
+}

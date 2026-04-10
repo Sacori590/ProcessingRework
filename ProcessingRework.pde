@@ -105,6 +105,17 @@ int queue(float x, int iter, ArrayList<Personne> queue) {
 
   Personne current = queue.get(iter);
 
+  if (current.bubble.text != "") {
+    current.bubble.draw(15);
+    current.bubble.show_pop_up = true;
+    current.hitbox.clickable = false;
+    for (UI e : current.bubble.pop_up_elements) {
+      e.clickable = true;
+    }
+  }
+  if (current.bubble.show_pop_up) {
+    current.bubble.popUpMenu();
+  }
   for (Station s : StationsSet) {
     for (Cabine c : CabineSet )
     {
@@ -194,13 +205,7 @@ void mousePressed() {
       }
       //show button on click
       if (s.hitbox.in()) {
-        s.bubble.popUpMenu();
         s.bubble.text = s.toString();
-        s.bubble.show_pop_up = true;
-        s.hitbox.clickable = false;
-        for (UI e : s.bubble.pop_up_elements) {
-          e.clickable = true;
-        }
       }
     }
   }
@@ -257,13 +262,8 @@ void mousePressed() {
         e.clickable = false;
       }
     }
-    if (c.hitbox.in()) {
+    if (c.hitbox.in())
       c.bubble.text = c.toString();
-      c.bubble.show_pop_up = true;
-      for (UI e : c.bubble.pop_up_elements) {
-        e.clickable = true;
-      }
-    }
   }
 
   if (debug.in()) {
@@ -305,17 +305,18 @@ void draw() {
       p.set(c.personsPosition(p), c.y);
       p.idle.anime(1);
     }
-    if (c.bubble.text != "")
+    if (c.bubble.text != "") {
       c.bubble.draw(15);
+      c.bubble.show_pop_up = true;
+      for (UI e : c.bubble.pop_up_elements) {
+        e.clickable = true;
+      }
+    }
 
     if (c.bubble.show_pop_up) {
       c.bubble.popUpMenu();
     }
-    if (c.animation) {
-      c.walk(c.position);
-    } else {
-      c.idle.anime(1);
-    }
+    c.walk(c.position);
   }
   for (Station s : StationsSet) {
     //animation pour aller dans la file de la station
@@ -323,15 +324,7 @@ void draw() {
     //animation pour se diriger à la station
     s.jter = queue(s.portePos()[0], s.jter, s.enterers);
   }
-  for (Station s : StationsSet) {
-    for (Personne current : s.persons) {
-      if (current.bubble.text != "")
-        current.bubble.draw(15);
-      if (current.bubble.show_pop_up) {
-        current.bubble.popUpMenu();
-      }
-    }
-  }
+
 
   /* --------------------- DEBUG MODE --------------------- */
 

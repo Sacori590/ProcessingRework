@@ -22,12 +22,6 @@ public class UI extends HitBox {
     int i = 0;
     for (UI ele : this.pop_up_elements) {
 
-      /*ele.x1 = this.x2 + 15;
-       ele.y1 = this.y1 + 25 * i;
-       ele.xoffset = (int) textWidth(ele.text) + 15;
-       ele.yoffset = 20;
-       ele.x2 = ele.x1 + ele.xoffset;
-       ele.y2 = ele.y1 + ele.yoffset;*/
       ele.set(this.x2+15, this.y1+25*i, this.x2+15 + textWidth(ele.text) + 15, this.y1+25*i +20);
 
       ele.draw(30);
