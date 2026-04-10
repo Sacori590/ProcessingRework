@@ -5,12 +5,12 @@ ArrayList<PImage> sprites = new ArrayList<PImage>();
 
 
 UI add_person_button, debug;
-PImage bg, station, cabine, cabine_idle, cable;
+PImage bg, station, station2, station3, station4, station5, cabine, cabine_idle, cable;
 
 int sprite_size = 0;
-float resize_factor = 1;
+float resize_factor = 2;
 // logique métier
-Cabine C1, C2, Cable;
+Cabine C1, C2;
 Station A, B, C;
 Personne to_remove ;
 
@@ -21,6 +21,22 @@ boolean debug_mode = false;
 
 float[] a;
 
+void generalResize() {
+  if (resize_factor > 1) {
+    for (PImage e : sprites) {
+
+      e.resize((int) (e.width/resize_factor), (int) (e.height/resize_factor));
+    }
+    station2.resize((int) (station.width/resize_factor), (int) (station.height/resize_factor));
+    station3.resize((int) (station.width/resize_factor), (int) (station.height/resize_factor));
+    station4.resize((int) (station.width/resize_factor), (int) (station.height/resize_factor));
+    station5.resize((int) (station.width/resize_factor), (int) (station.height/resize_factor));
+    station.resize((int) (station.width/resize_factor), (int) (station.height/resize_factor));
+    cabine.resize((int) (cabine.width/resize_factor), (int) (cabine.height/resize_factor));
+    cabine_idle.resize((int) (cabine_idle.width/resize_factor), (int) (cabine_idle.height/resize_factor));
+  }
+  bg.resize(width, height);
+}
 
 
 void setup() {
@@ -28,7 +44,10 @@ void setup() {
   pixelDensity(1);
   size(768, 576);
   frameRate(30);
-  fullScreen();
+  //fullScreen();
+  noSmooth();
+
+  windowResizable(true);
 
 
   // initialisation des sprites
@@ -41,28 +60,22 @@ void setup() {
 
 
   bg = loadImage("assets/nature_3/origbig.png");
-  station = loadImage("assets/nature_3/Stations.png");
+  station = loadImage("assets/téléphérique/stationLayer1.png");
+  station2 = loadImage("assets/téléphérique/stationLayer2.png");
+  station3 = loadImage("assets/téléphérique/stationLayer3.png");
+  station4 = loadImage("assets/téléphérique/stationLayer4.png");
+  station5 = loadImage("assets/téléphérique/stationLayer5.png");
   cabine = loadImage("assets/téléphérique/cabine1.png");
   cabine_idle = loadImage("assets/téléphérique/cabine1.png");
   cable = loadImage("assets/téléphérique/cable.png");
 
   //resizing
-  if (resize_factor > 1) {
-    for (PImage e : sprites) {
-
-      e.resize((int) (e.width/resize_factor), (int) (e.height/resize_factor));
-    }
-    station.resize((int) (station.width/resize_factor), (int) (station.height/resize_factor));
-    cabine.resize((int) (cabine.width/resize_factor), (int) (cabine.height/resize_factor));
-    cabine_idle.resize((int) (cabine_idle.width/resize_factor), (int) (cabine_idle.height/resize_factor));
-  }
-  bg.resize(width, height);
-
+  generalResize();
   /* initialize work logic */
   //create cabines and stations
   C1 = new Cabine('1', cabine, cabine.height);
   C2 = new Cabine('2', cabine, cabine.height );
-  Cable = new Cabine('2', cable, cable.height );
+
 
   A = new Station('A', C1, 480, station);
   B = new Station('B', null, 480, station);
@@ -71,27 +84,27 @@ void setup() {
   //cabine configuration
   C1.position = A;
   C2.position = C;
-  Cable.position = C;
+
 
   C1.idle = new Sprite(cabine_idle, cabine.height);
   C2.idle = new Sprite(cabine_idle, cabine.height);
-  Cable.idle = new Sprite(cable, cable.height);
-  Cable.hitbox.clickable = false;
+
+
 
   C1.initPopUp();
   C2.initPopUp();
 
 
-  A.set(width-station.width-200, height-station.height, width-200, height);
+  A.set(width-station.width-(int) textWidth("Move to previous station                  "), height-station.height, width-(int) textWidth("Mot to previous station"), height);
   B.set(0, height/2 - station.height/2, station.width, height/2 - station.height/2+station.height);
-  C.set(width-station.width-200, 0-station.height*0.3, width-200, station.height-station.height*0.3);
+  C.set(width-station.width-400, 0-station.height*0.3, width-400, station.height-station.height*0.3);
 
   a = C1.position.cabinePos();
   C1.set(a[0], a[1]);
   a = C2.position.cabinePos();
   //a = B.cabinePos();
   C2.set(a[0], a[1]);
-  Cable.set(a[0], a[1]);
+
 
   StationsSet.add(A);
   StationsSet.add(B);
@@ -297,6 +310,10 @@ void draw() {
   rect(0, B.y2 - B.img.height*0.06, width, B.img.height*0.07);
   rect(0, C.y2 - C.img.height*0.06, width, C.img.height*0.07);
   fill(255, 155, 0);
+  image(station5, A.x1, A.y1);
+  image(station5, B.x1, B.y1);
+  image(station5, C.x1, C.y1);
+
   A.draw();
   B.draw();
   C.draw();
@@ -307,7 +324,12 @@ void draw() {
   //UI
   add_person_button.draw(20);
   debug.draw(20);
-
+  for (Station s : StationsSet) {
+    //animation pour aller dans la file de la station
+    s.iter = queue(s.portePos()[0], s.iter, s.persons);
+    //animation pour se diriger à la station
+    s.jter = queue(s.portePos()[0], s.jter, s.enterers);
+  }
   for (Cabine c : CabineSet) {
     for (Personne p : c.persons) {
       p.set(c.personsPosition(p), c.y);
@@ -325,13 +347,11 @@ void draw() {
       c.bubble.popUpMenu();
     }
     c.walk(c.position);
+    image(station3, A.x1, A.y1);
+    image(station3, B.x1, B.y1);
+    image(station3, C.x1, C.y1);
   }
-  for (Station s : StationsSet) {
-    //animation pour aller dans la file de la station
-    s.iter = queue(s.portePos()[0], s.iter, s.persons);
-    //animation pour se diriger à la station
-    s.jter = queue(s.portePos()[0], s.jter, s.enterers);
-  }
+
 
 
   /* --------------------- DEBUG MODE --------------------- */
@@ -378,11 +398,14 @@ void draw() {
     }
   }
   stroke(10);
-  strokeWeight(resize_factor*5);
-  noSmooth();
+  strokeWeight(1/resize_factor*6);
   line(A.cabinePos()[0]+C1.anim_size/2, A.cabinePos()[1], B.cabinePos()[0]+C1.anim_size/2, B.cabinePos()[1]);
   line(C.cabinePos()[0]+C1.anim_size/2, C.cabinePos()[1], A.cabinePos()[0]+C1.anim_size/2, A.cabinePos()[1]);
   line(C.cabinePos()[0]+C1.anim_size/2, C.cabinePos()[1], B.cabinePos()[0]+C1.anim_size/2, B.cabinePos()[1]);
   noStroke();
+
+  image(station4, A.x1, A.y1);
+  image(station4, B.x1, B.y1);
+  image(station4, C.x1, C.y1);
 }
 // selection de l'action en faisant des randoms sur si la précondition est vérifiée ou pas dans une liste précise et pas tous pour ne pas perdre des ressources inutillements
