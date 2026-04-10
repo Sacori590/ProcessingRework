@@ -5,12 +5,12 @@ ArrayList<PImage> sprites = new ArrayList<PImage>();
 
 
 UI add_person_button, debug;
-PImage bg, station, cabine, cabine_idle;
+PImage bg, station, cabine, cabine_idle, cable;
 
 int sprite_size = 0;
-float resize_factor = 2;
+float resize_factor = 1;
 // logique métier
-Cabine C1, C2;
+Cabine C1, C2, Cable;
 Station A, B, C;
 Personne to_remove ;
 
@@ -44,6 +44,7 @@ void setup() {
   station = loadImage("assets/nature_3/Stations.png");
   cabine = loadImage("assets/téléphérique/cabine1.png");
   cabine_idle = loadImage("assets/téléphérique/cabine1.png");
+  cable = loadImage("assets/téléphérique/cable.png");
 
   //resizing
   if (resize_factor > 1) {
@@ -61,6 +62,8 @@ void setup() {
   //create cabines and stations
   C1 = new Cabine('1', cabine, cabine.height);
   C2 = new Cabine('2', cabine, cabine.height );
+  Cable = new Cabine('2', cable, cable.height );
+
   A = new Station('A', C1, 480, station);
   B = new Station('B', null, 480, station);
   C = new Station('C', C2, 480, station);
@@ -68,8 +71,12 @@ void setup() {
   //cabine configuration
   C1.position = A;
   C2.position = C;
+  Cable.position = C;
+
   C1.idle = new Sprite(cabine_idle, cabine.height);
   C2.idle = new Sprite(cabine_idle, cabine.height);
+  Cable.idle = new Sprite(cable, cable.height);
+  Cable.hitbox.clickable = false;
 
   C1.initPopUp();
   C2.initPopUp();
@@ -84,6 +91,7 @@ void setup() {
   a = C2.position.cabinePos();
   //a = B.cabinePos();
   C2.set(a[0], a[1]);
+  Cable.set(a[0], a[1]);
 
   StationsSet.add(A);
   StationsSet.add(B);
@@ -221,7 +229,7 @@ void mousePressed() {
       }
     }
     // go next station
-    if (c.bubble.pop_up_elements.get(1).in()) {
+    if (c.bubble.pop_up_elements.get(1).in() && !c.animation) {
       //println(c);
       float[] a = C1.nextStation().cabinePos();
 
@@ -239,7 +247,7 @@ void mousePressed() {
       //println(c.previousStation());
     }
     //go previous station
-    if (c.bubble.pop_up_elements.get(2).in()) {
+    if (c.bubble.pop_up_elements.get(2).in() && !c.animation) {
       float[] a = C1.previousStation().cabinePos();
 
       //C1.set(a[0], a[1]);
@@ -369,5 +377,12 @@ void draw() {
       to_remove = null;
     }
   }
+  stroke(10);
+  strokeWeight(resize_factor*5);
+  noSmooth();
+  line(A.cabinePos()[0]+C1.anim_size/2, A.cabinePos()[1], B.cabinePos()[0]+C1.anim_size/2, B.cabinePos()[1]);
+  line(C.cabinePos()[0]+C1.anim_size/2, C.cabinePos()[1], A.cabinePos()[0]+C1.anim_size/2, A.cabinePos()[1]);
+  line(C.cabinePos()[0]+C1.anim_size/2, C.cabinePos()[1], B.cabinePos()[0]+C1.anim_size/2, B.cabinePos()[1]);
+  noStroke();
 }
 // selection de l'action en faisant des randoms sur si la précondition est vérifiée ou pas dans une liste précise et pas tous pour ne pas perdre des ressources inutillements

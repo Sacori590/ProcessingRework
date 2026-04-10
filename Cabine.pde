@@ -147,9 +147,6 @@ public class Cabine extends Sprite {
     } else {
       ret = A;
     }
-    for (Personne p : this.persons) {
-      p.set(this.x, this.y);
-    }
     return ret;
   }
 
@@ -161,9 +158,6 @@ public class Cabine extends Sprite {
       ret = A;
     } else {
       ret =  B;
-    }
-    for (Personne p : this.persons) {
-      p.set(this.x, this.y);
     }
     return ret;
   }

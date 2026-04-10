@@ -58,44 +58,13 @@ public class Sprite {
       this.idle.anime(dir);
     } else {
       this.anime(dir);
-      this.set(lerp(this.x, gx, 0.1), lerp(this.y, gy, 0.1));
+      float d = dist(this.x, this.y, gx, gy);
+      this.set(lerp(this.x, gx, this.step_size/d), lerp(this.y, gy, this.step_size/d));
       this.hitbox.set(this.x+xoffset, this.y+yoffset, this.x+this.anim_size-xoffset, this.y+this.anim_size);
     }
   }
 
   public int getAnimationLength() {
     return this.img.width / anim_size;
-  }
-}
-
-
-
-
-for (s : StationsSet) {
-  for (p : s.persons) {
-
-    if (p.bubble.text != "") {
-      p.bubble.draw(15);
-      p.bubble.show_pop_up = true;
-      p.hitbox.clickable = false;
-      for (UI e : p.bubble.pop_up_elements) {
-        e.clickable = true;
-      }
-    }
-    if (p.bubble.show_pop_up) {
-      p.bubble.popUpMenu();
-    }
-
-    if (s.enterers.contains(p) && p.atStation(s) && s.cabine != null) {
-      if (s.cabine.atStation(s)) {
-        s.persons.add(p);
-
-        c.mount(p);
-        s.enterers.remove(p);
-        iter--;
-        c.persons.get(c.persons.size()-1).set(c.personsPosition(p), c.y);
-      }
-    }
-    current.walk(x-current.anim_size/3*s.count+1, current.y, dir, sprite_size/3, sprite_size/3);
   }
 }
