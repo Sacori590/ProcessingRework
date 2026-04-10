@@ -8,7 +8,7 @@ UI add_person_button, debug;
 PImage bg, station, cabine, cabine_idle;
 
 int sprite_size = 0;
-float resize_factor = 1;
+float resize_factor = 4;
 // logique métier
 Cabine C1, C2;
 Station A, B, C;
@@ -29,7 +29,7 @@ void setup() {
   pixelDensity(1);
   size(768, 576);
   frameRate(30);
-  fullScreen();
+  //fullScreen();
 
 
   // initialisation des sprites
