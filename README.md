@@ -34,11 +34,6 @@ Ce projet a été réalisé avec processing, dans le but de simuler un téléph�
 
   - Station précédente, fait avancer la cabine vers la prochaine station précédente la chaine C->B->A->C->. . . et cela seulement si toutes les cabines sont arrétée a une station
 
-# Mes regrets
-
-- Les personnes se déplaçant de la droite vers la gauche marcheront à reculon, c'est due au fait que je ne souhaitait pas doubler les animations chargée en RAM je me suis donc contenté de changer l'ordre des différentes images afin que l'animation reste naturelle car dans la cas contraire l'animation ne semblait pas agréable à la vue des utilisateurs.
-- Je ne suis pas un artiste, les différents éléments n'ont donc pas pu tous être réalisé par mes soins
-
 # Changement dans le code
 
 Conseil : veillez a utiliser `ctrl+F` ou `cmd+F` pour trouver les lignes concernées, la première occurence est celle qui doit vous intérésser.
@@ -63,5 +58,12 @@ le reste du code n'as normalement pas besoin d'être modifié pour satisfaire le
 
 # Sources
 
-Les personnages : https://craftpix.net/freebies/free-schoolgirls-anime-character-pixel-sprite-pack/
-Le fond d'écran : https://craftpix.net/freebies/free-nature-backgrounds-pixel-art/?num=1&count=72&sq=nature&pos=5
+Merci à craftpix.net qui m'a permis de reprendre des sprites libre de droit qui m'ont permis d'améliorer l'aspect amusant du programme
+
+- Les personnages : https://craftpix.net/freebies/free-schoolgirls-anime-character-pixel-sprite-pack/
+- Le fond d'écran : https://craftpix.net/freebies/free-nature-backgrounds-pixel-art/?num=1&count=72&sq=nature&pos=5
+
+# Mes regrets
+
+- Les personnes se déplaçant de la droite vers la gauche marcheront à reculon, c'est due au fait que je ne souhaitait pas doubler les animations chargée en RAM je me suis donc contenté de changer l'ordre des différentes images afin que l'animation reste naturelle car dans la cas contraire l'animation ne semblait pas agréable à la vue des utilisateurs.
+- Je ne suis pas un artiste, les différents éléments n'ont donc pas pu tous être réalisé par mes soins
