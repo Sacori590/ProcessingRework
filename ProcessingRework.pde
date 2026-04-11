@@ -76,9 +76,9 @@ void setup() {
   C2.initPopUp();
 
 
-  A.set(width-station.width-200, height-station.height, width-200, height);
-  B.set(0, height-station.height-25, station.width, height-25);
-  C.set(width-station.width-400, height/2-station.height*0.3, width-400, height/2+station.height-station.height*0.3);
+  A.set(width-station.width-160, height-station.height, width-160, height);
+  B.set(0, height/2-station.height*0.3, station.width, height/2+station.height-station.height*0.3);
+  C.set(width-station.width-240, 0, station.width, station.height);
 
   a = C1.position.cabinePos();
   C1.set(a[0], a[1]);
