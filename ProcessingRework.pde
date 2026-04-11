@@ -5,7 +5,7 @@ ArrayList<PImage> sprites = new ArrayList<PImage>();
 
 
 UI add_person_button, debug, station_is_moving, move_a_station;
-PImage bg, station, station3, station4, cabine, cabine_idle, cable;
+PImage bg, station, station3, station4, cabine, cabine_idle;
 Object rm_from = null;
 
 int sprite_size = 0;
@@ -23,36 +23,12 @@ boolean move_station = false;
 
 float[] a;
 
-void drawCable() {
-  stroke(10);
-  strokeWeight(1/resize_factor*6);
-  line(A.cabinePos()[0]+C1.anim_size/2, A.cabinePos()[1], B.cabinePos()[0]+C1.anim_size/2, B.cabinePos()[1]);
-  line(C.cabinePos()[0]+C1.anim_size/2, C.cabinePos()[1], A.cabinePos()[0]+C1.anim_size/2, A.cabinePos()[1]);
-  line(C.cabinePos()[0]+C1.anim_size/2, C.cabinePos()[1], B.cabinePos()[0]+C1.anim_size/2, B.cabinePos()[1]);
-  noStroke();
-}
-void generalResize() {
-  if (resize_factor > 1) {
-    for (PImage e : sprites) {
-
-      e.resize((int) (e.width/resize_factor), (int) (e.height/resize_factor));
-    }
-    station3.resize((int) (station.width/resize_factor), (int) (station.height/resize_factor));
-    station4.resize((int) (station.width/resize_factor), (int) (station.height/resize_factor));
-    station.resize((int) (station.width/resize_factor), (int) (station.height/resize_factor));
-    cabine.resize((int) (cabine.width/resize_factor), (int) (cabine.height/resize_factor));
-    cabine_idle.resize((int) (cabine_idle.width/resize_factor), (int) (cabine_idle.height/resize_factor));
-  }
-  bg.resize(width, height);
-}
-
-
 void setup() {
   // size and bg size must be equals
   pixelDensity(1);
   size(768, 576);
   frameRate(30);
-  fullScreen();
+  //fullScreen();
   noSmooth();
 
   //windowResizable(true);
@@ -73,7 +49,6 @@ void setup() {
   station4 = loadImage("assets/téléphérique/stationLayer4.png");
   cabine_idle = loadImage("assets/téléphérique/cabine-Sheet.png");
   cabine = loadImage("assets/téléphérique/cabineIdle-Sheet.png");
-  cable = loadImage("assets/téléphérique/cable.png");
 
   //resizing
   generalResize();
@@ -127,6 +102,28 @@ void setup() {
   station_is_moving = new UI(0, 0, 0, 0);
 }
 
+void drawCable() {
+  stroke(10);
+  strokeWeight(1/resize_factor*6);
+  line(A.cabinePos()[0]+C1.anim_size/2, A.cabinePos()[1], B.cabinePos()[0]+C1.anim_size/2, B.cabinePos()[1]);
+  line(C.cabinePos()[0]+C1.anim_size/2, C.cabinePos()[1], A.cabinePos()[0]+C1.anim_size/2, A.cabinePos()[1]);
+  line(C.cabinePos()[0]+C1.anim_size/2, C.cabinePos()[1], B.cabinePos()[0]+C1.anim_size/2, B.cabinePos()[1]);
+  noStroke();
+}
+void generalResize() {
+  if (resize_factor != 0) {
+    for (PImage e : sprites) {
+
+      e.resize((int) (e.width/resize_factor), (int) (e.height/resize_factor));
+    }
+    station3.resize((int) (station.width/resize_factor), (int) (station.height/resize_factor));
+    station4.resize((int) (station.width/resize_factor), (int) (station.height/resize_factor));
+    station.resize((int) (station.width/resize_factor), (int) (station.height/resize_factor));
+    cabine.resize((int) (cabine.width/resize_factor), (int) (cabine.height/resize_factor));
+    cabine_idle.resize((int) (cabine_idle.width/resize_factor), (int) (cabine_idle.height/resize_factor));
+  }
+  bg.resize(width, height);
+}
 int queue(float x, int iter, ArrayList<Personne> queue) {
   if (iter == queue.size()) {
     return 0;
