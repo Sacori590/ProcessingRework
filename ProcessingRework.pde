@@ -26,7 +26,7 @@ float[] a;
 void setup() {
   // size and bg size must be equals
   pixelDensity(1);
-  size(768, 576);
+  size(1024, 604);
   frameRate(30);
   //fullScreen();
   noSmooth();

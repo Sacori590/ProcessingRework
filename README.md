@@ -55,7 +55,8 @@ pour désactiver le mode plein écran, il suffit de mettre la ligne en commentai
 La ligne `size(int width ,int height);` vous permet de choisir une résolution différente pour lancer le programme si la ligne `fullscreen();` a été mise en commentaire sachant que `width` correspond à la largeur de la fenêtre et `height` correspondant à la hauteur de la fenêtre je recommande les résolutions ci dessous :
 
 - `size(1920, 1080);` (écran standard)
-- `size(768, 576);` (petit écran)
+- `size(1024, 604);` (écran moyen)
+- `size(735, 478);` (petit écran)
 - `size(2304, 1296);` (taille original du fond d'écran pour les trèssss grand écran)
 
 le reste du code n'as normalement pas besoin d'être modifié pour satisfaire le confort utilisateur.
