@@ -5,7 +5,7 @@ ArrayList<PImage> sprites = new ArrayList<PImage>();
 
 
 UI add_person_button, debug, station_is_moving, move_a_station;
-PImage bg, station, station2, station3, station4, cabine, cabine_idle, cable;
+PImage bg, station, station3, station4, cabine, cabine_idle, cable;
 Object rm_from = null;
 
 int sprite_size = 0;
@@ -37,7 +37,6 @@ void generalResize() {
 
       e.resize((int) (e.width/resize_factor), (int) (e.height/resize_factor));
     }
-    station2.resize((int) (station.width/resize_factor), (int) (station.height/resize_factor));
     station3.resize((int) (station.width/resize_factor), (int) (station.height/resize_factor));
     station4.resize((int) (station.width/resize_factor), (int) (station.height/resize_factor));
     station.resize((int) (station.width/resize_factor), (int) (station.height/resize_factor));
@@ -70,7 +69,6 @@ void setup() {
 
   bg = loadImage("assets/nature_3/origbig.png");
   station = loadImage("assets/téléphérique/stationLayer1.png");
-  station2 = loadImage("assets/téléphérique/stationLayer2.png");
   station3 = loadImage("assets/téléphérique/stationLayer3.png");
   station4 = loadImage("assets/téléphérique/stationLayer4.png");
   cabine_idle = loadImage("assets/téléphérique/cabine-Sheet.png");
@@ -250,15 +248,19 @@ void mousePressed() {
       }
     }
   }
-  if (move_station) {
+  if (move_station && !C1.animation && !C2.animation) {
     for (Station s : StationsSet) {
       if (moving != null) {
         moving.set(mouseX, mouseY-station.height, mouseX+station.width, mouseY);
+        for (Personne p : moving.persons)
+          p.set(moving.portePos()[0], moving.portePos()[1]-p.anim_size);
+        if (moving.cabine != null)
+          moving.cabine.set(moving.cabinePos()[0], moving.cabinePos()[1]);
         moving =null;
         break;
       }
 
-      if ((s.cabine == null ||  !s.cabine.hitbox.in() ) && s.in()) {
+      if ((s.cabine == null || !s.cabine.hitbox.in() ) && s.in()) {
         moving = s;
         break;
       }
