@@ -177,10 +177,10 @@ public class Cabine extends Sprite {
      && (a[1] <= this.y + this.img.height/2f && this.y + this.img.height/2f <= a[1] + this.img.height)
      ));*/
     return (
-      a[0] <= this.x+this.anim_size/2
-      && this.x+this.anim_size/2 <= a[0] + this.anim_size
-      && a[1] <= this.y+this.img.height/2
-      && this.y+this.img.height/2 <= a[1] + this.anim_size
+      a[0] <= this.x+this.anim_size/4
+      && this.x+this.anim_size/8 <= a[0] + this.anim_size/4
+      && a[1] <= this.y+this.img.height/4
+      && this.y+this.img.height/4 <= a[1] + this.anim_size/4
       );
   }
   void walk(Station end) {

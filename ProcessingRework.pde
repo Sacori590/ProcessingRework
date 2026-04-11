@@ -136,17 +136,6 @@ int queue(float x, int iter, ArrayList<Personne> queue) {
 
   Personne current = queue.get(iter);
 
-  if (current.bubble.text != "") {
-    current.bubble.draw(15);
-    current.bubble.show_pop_up = true;
-    current.hitbox.clickable = false;
-    for (UI e : current.bubble.pop_up_elements) {
-      e.clickable = true;
-    }
-  }
-  if (current.bubble.show_pop_up) {
-    current.bubble.popUpMenu();
-  }
   for (Station s : StationsSet) {
     for (Cabine c : CabineSet )
     {
@@ -299,7 +288,7 @@ void mousePressed() {
       }
     }
     // go next station
-    if (c.bubble.pop_up_elements.get(1).in() && !c.animation) {
+    if (c.bubble.pop_up_elements.get(1).in() && !C1.animation && !C2.animation) {
       //println(c);
       float[] a = C1.nextStation().cabinePos();
 
@@ -421,6 +410,21 @@ void draw() {
       if (to_remove.titre == Titre_de_transport.None)
         to_remove.setSprite(sprites.get(0), sprites.get(1));
       to_remove = null;
+    }
+  }
+  for (Station s : StationsSet) {
+    for (Personne current : s.persons) {
+      if (current.bubble.text != "") {
+        current.bubble.draw(15);
+        current.bubble.show_pop_up = true;
+        current.hitbox.clickable = false;
+        for (UI e : current.bubble.pop_up_elements) {
+          e.clickable = true;
+        }
+      }
+      if (current.bubble.show_pop_up) {
+        current.bubble.popUpMenu();
+      }
     }
   }
 
