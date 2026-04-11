@@ -5,7 +5,7 @@ ArrayList<PImage> sprites = new ArrayList<PImage>();
 
 
 UI add_person_button, debug, station_is_moving, move_a_station;
-PImage bg, station, station2, station3, station4, station5, cabine, cabine_idle, cable;
+PImage bg, station, station2, station3, station4, cabine, cabine_idle, cable;
 
 int sprite_size = 0;
 float resize_factor = 2;
@@ -31,7 +31,6 @@ void generalResize() {
     station2.resize((int) (station.width/resize_factor), (int) (station.height/resize_factor));
     station3.resize((int) (station.width/resize_factor), (int) (station.height/resize_factor));
     station4.resize((int) (station.width/resize_factor), (int) (station.height/resize_factor));
-    station5.resize((int) (station.width/resize_factor), (int) (station.height/resize_factor));
     station.resize((int) (station.width/resize_factor), (int) (station.height/resize_factor));
     cabine.resize((int) (cabine.width/resize_factor), (int) (cabine.height/resize_factor));
     cabine_idle.resize((int) (cabine_idle.width/resize_factor), (int) (cabine_idle.height/resize_factor));
@@ -65,7 +64,6 @@ void setup() {
   station2 = loadImage("assets/téléphérique/stationLayer2.png");
   station3 = loadImage("assets/téléphérique/stationLayer3.png");
   station4 = loadImage("assets/téléphérique/stationLayer4.png");
-  station5 = loadImage("assets/téléphérique/stationLayer5.png");
   cabine = loadImage("assets/téléphérique/cabine1.png");
   cabine_idle = loadImage("assets/téléphérique/cabine1.png");
   cable = loadImage("assets/téléphérique/cable.png");
@@ -334,9 +332,6 @@ void draw() {
   rect(0, B.y2 - B.img.height*0.06, width, B.img.height*0.07);
   rect(0, C.y2 - C.img.height*0.06, width, C.img.height*0.07);
   fill(255, 155, 0);
-  image(station5, A.x1, A.y1);
-  image(station5, B.x1, B.y1);
-  image(station5, C.x1, C.y1);
 
   A.draw();
   B.draw();
