@@ -4,6 +4,8 @@ public static class Guard {
   public static boolean mount(Personne person, Station station) {
     if (station.cabine == null)
       return false;
+    if (!station.cabine.atStation(station))
+      return false;
     if (station.cabine.count() >3 ) {
       return false;
     }

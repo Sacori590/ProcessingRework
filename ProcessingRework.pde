@@ -6,6 +6,7 @@ ArrayList<PImage> sprites = new ArrayList<PImage>();
 
 UI add_person_button, debug, station_is_moving, move_a_station;
 PImage bg, station, station2, station3, station4, cabine, cabine_idle, cable;
+Object rm_from = null;
 
 int sprite_size = 0;
 float resize_factor = 2;
@@ -18,10 +19,18 @@ ArrayList<Cabine> CabineSet = new ArrayList<Cabine>();
 
 ArrayList<Station> StationsSet = new ArrayList<Station>();
 boolean debug_mode = false;
-boolean move_station = true;
+boolean move_station = false;
 
 float[] a;
 
+void drawCable() {
+  stroke(10);
+  strokeWeight(1/resize_factor*6);
+  line(A.cabinePos()[0]+C1.anim_size/2, A.cabinePos()[1], B.cabinePos()[0]+C1.anim_size/2, B.cabinePos()[1]);
+  line(C.cabinePos()[0]+C1.anim_size/2, C.cabinePos()[1], A.cabinePos()[0]+C1.anim_size/2, A.cabinePos()[1]);
+  line(C.cabinePos()[0]+C1.anim_size/2, C.cabinePos()[1], B.cabinePos()[0]+C1.anim_size/2, B.cabinePos()[1]);
+  noStroke();
+}
 void generalResize() {
   if (resize_factor > 1) {
     for (PImage e : sprites) {
@@ -64,8 +73,8 @@ void setup() {
   station2 = loadImage("assets/téléphérique/stationLayer2.png");
   station3 = loadImage("assets/téléphérique/stationLayer3.png");
   station4 = loadImage("assets/téléphérique/stationLayer4.png");
-  cabine = loadImage("assets/téléphérique/cabine1.png");
-  cabine_idle = loadImage("assets/téléphérique/cabine1.png");
+  cabine_idle = loadImage("assets/téléphérique/cabine-Sheet.png");
+  cabine = loadImage("assets/téléphérique/cabineIdle-Sheet.png");
   cable = loadImage("assets/téléphérique/cable.png");
 
   //resizing
@@ -219,6 +228,22 @@ void mousePressed() {
           it1.remove();
         }
       }
+      if (s.bubble.pop_up_elements.get(4).in()) {
+        for (Station station : StationsSet) {
+          if (station.persons.contains(s)) {
+            rm_from = station;
+            to_remove = s;
+          }
+        }
+      }
+      if (rm_from == null) {
+        for (Cabine cabine : CabineSet) {
+          if (cabine.persons.contains(s)) {
+            rm_from = cabine;
+            break;
+          }
+        }
+      }
 
 
       // mask on click
@@ -253,6 +278,16 @@ void mousePressed() {
     moving = null;
   }
 
+  if (rm_from != null) {
+    try {
+      Station rm_s = (Station) rm_from;
+      rm_s.persons.remove(to_remove);
+    }
+    catch(Exception e ) {
+      Cabine rm_c = (Cabine) rm_from;
+      rm_c.persons.remove(to_remove);
+    }
+  }
   Iterator<Cabine> it2 = CabineSet.iterator();
   while (it2.hasNext()) {
     Cabine c = it2.next();
@@ -339,19 +374,31 @@ void draw() {
 
 
   //ForeGround
-
-  //UI
   for (Station s : StationsSet) {
     //animation pour aller dans la file de la station
     s.iter = queue(s.portePos()[0], s.iter, s.persons);
     //animation pour se diriger à la station
     s.jter = queue(s.portePos()[0], s.jter, s.enterers);
   }
+
+  //UI
+
   for (Cabine c : CabineSet) {
     for (Personne p : c.persons) {
-      p.set(c.personsPosition(p), c.y);
+      p.set(c.personsPosition(p), c.y-c.anim_size*0.03);
       p.idle.anime(1);
     }
+    c.walk(c.position);
+    if (!c.animation) {
+      image(station3, c.position.x1, c.position.y1);
+    }
+  }
+  drawCable();
+  image(station4, A.x1, A.y1);
+  image(station4, B.x1, B.y1);
+  image(station4, C.x1, C.y1);
+  for (Cabine c : CabineSet) {
+
     if (c.bubble.text != "") {
       c.bubble.draw(15);
       c.bubble.show_pop_up = true;
@@ -363,13 +410,30 @@ void draw() {
     if (c.bubble.show_pop_up) {
       c.bubble.popUpMenu();
     }
-    c.walk(c.position);
-    if (!c.animation) {
-      image(station3, c.position.x1, c.position.y1);
-    }
   }
 
 
+  for (Cabine n : CabineSet) {
+    if (to_remove != null && n.persons.contains(to_remove)) {
+      n.dismount(to_remove);
+      to_remove.y = to_remove.station.portePos()[1]-to_remove.img.height;
+      to_remove.x = to_remove.station.portePos()[0]-to_remove.anim_size/3;
+      if (to_remove.titre == Titre_de_transport.None)
+        to_remove.setSprite(sprites.get(0), sprites.get(1));
+      to_remove = null;
+    }
+  }
+
+  if (moving !=null && move_station) {
+    station_is_moving.text =String.format("you are moving the station %c", moving.Id);
+    station_is_moving.set(mouseX+10, mouseY, 0, mouseY+20);
+    station_is_moving.draw(10);
+  }
+
+  add_person_button.draw(20);
+  debug.draw(20);
+  move_a_station.text = String.format("déplacement des stations : %b", move_station);
+  move_a_station.draw(20);
 
   /* --------------------- DEBUG MODE --------------------- */
 
@@ -403,37 +467,5 @@ void draw() {
   }
 
   /* ------------------------------------------------------ */
-
-  //Iterator<Cabine> it0 = CabineSet.iterator();
-  for (Cabine n : CabineSet) {
-    if (to_remove != null && n.persons.contains(to_remove)) {
-      n.dismount(to_remove);
-      to_remove.y = to_remove.station.portePos()[1]-to_remove.img.height;
-      to_remove.x = to_remove.station.portePos()[0]-to_remove.anim_size/3;
-      if (to_remove.titre == Titre_de_transport.None)
-        to_remove.setSprite(sprites.get(0), sprites.get(1));
-      to_remove = null;
-    }
-  }
-  stroke(10);
-  strokeWeight(1/resize_factor*6);
-  line(A.cabinePos()[0]+C1.anim_size/2, A.cabinePos()[1], B.cabinePos()[0]+C1.anim_size/2, B.cabinePos()[1]);
-  line(C.cabinePos()[0]+C1.anim_size/2, C.cabinePos()[1], A.cabinePos()[0]+C1.anim_size/2, A.cabinePos()[1]);
-  line(C.cabinePos()[0]+C1.anim_size/2, C.cabinePos()[1], B.cabinePos()[0]+C1.anim_size/2, B.cabinePos()[1]);
-  noStroke();
-
-  image(station4, A.x1, A.y1);
-  image(station4, B.x1, B.y1);
-  image(station4, C.x1, C.y1);
-  if (moving !=null && move_station) {
-    station_is_moving.text =String.format("you are moving the station %c", moving.Id);
-    station_is_moving.set(mouseX+10, mouseY, 0, mouseY+20);
-    station_is_moving.draw(10);
-  }
-
-  add_person_button.draw(20);
-  debug.draw(20);
-  move_a_station.text = String.format("déplacement des stations : %b", move_station);
-  move_a_station.draw(20);
 }
 // selection de l'action en faisant des randoms sur si la précondition est vérifiée ou pas dans une liste précise et pas tous pour ne pas perdre des ressources inutillements

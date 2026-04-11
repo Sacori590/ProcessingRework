@@ -81,6 +81,7 @@ public class Personne extends Sprite {
     this.bubble.pop_up_elements.add(new UI(0, 0, 0, 0, "Buy subscription"));
     this.bubble.pop_up_elements.add(new UI(0, 0, 0, 0, "Shred it !"));
     this.bubble.pop_up_elements.add(new UI(0, 0, 0, 0, "Enter current station"));
+    this.bubble.pop_up_elements.add(new UI(0, 0, 0, 0, "Kill"));
   }
 
   boolean atStation(Station station) {
