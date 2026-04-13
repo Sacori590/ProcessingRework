@@ -82,9 +82,9 @@ void setup() {
   /*1077 818     0.73 0.85         */
   /* 60 474      0.04 0.50         */
 
-  A.set(width*0.5, height*0.34-station.height, width*0.5+station.width, height*0.34);
-  B.set(width*0.73, height*0.85-station.height, width*0.73+station.width, height*0.85);
-  C.set(width*0.04, height*0.50-station.height, width*0.04+station.width, height*0.50);
+  A.set(width*0.73, height*0.85-station.height, width*0.73+station.width, height*0.85);
+  B.set(width*0.04, height*0.50-station.height, width*0.04+station.width, height*0.50);
+  C.set(width*0.5, height*0.34-station.height, width*0.5+station.width, height*0.34);
 
   a = C1.position.cabinePos();
   C1.set(a[0], a[1]);
