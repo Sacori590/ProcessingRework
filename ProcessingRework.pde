@@ -5,11 +5,11 @@ ArrayList<PImage> sprites = new ArrayList<PImage>();
 
 
 UI add_person_button, debug, station_is_moving, move_a_station;
-PImage bg, station, station3, station4, cabine, cabine_idle;
+PImage bg, fg, station, station3, station4, cabine, cabine_idle;
 Object rm_from = null;
 
 int sprite_size = 0;
-float resize_factor = 1;
+float resize_factor = 2;
 // logique métier
 Cabine C1, C2;
 Station A, B, C, moving;
@@ -44,6 +44,7 @@ void setup() {
 
 
   bg = loadImage("assets/nature_3/origbig.png");
+  fg = loadImage("assets/nature_3/foreGround.png");
   station = loadImage("assets/téléphérique/stationLayer1.png");
   station3 = loadImage("assets/téléphérique/stationLayer3.png");
   station4 = loadImage("assets/téléphérique/stationLayer4.png");
@@ -75,10 +76,15 @@ void setup() {
   C1.initPopUp();
   C2.initPopUp();
 
+  /* 1470 956  meilleur positionnement des cabines*/
 
-  A.set(width-station.width-160, height-station.height, width-160, height);
-  B.set(0, height/2-station.height*0.3, station.width, height/2+station.height-station.height*0.3);
-  C.set(width-station.width-240, 0, width-240, station.height);
+  /* 745 326     0.50 0.34       */
+  /*1077 818     0.73 0.85         */
+  /* 60 474      0.04 0.50         */
+
+  A.set(width*0.5, height*0.34-station.height, width*0.5+station.width, height*0.34);
+  B.set(width*0.73, height*0.85-station.height, width*0.73+station.width, height*0.85);
+  C.set(width*0.04, height*0.50-station.height, width*0.04+station.width, height*0.50);
 
   a = C1.position.cabinePos();
   C1.set(a[0], a[1]);
@@ -123,6 +129,7 @@ void generalResize() {
     cabine_idle.resize((int) (cabine_idle.width/resize_factor), (int) (cabine_idle.height/resize_factor));
   }
   bg.resize(width, height);
+  fg.resize(width, height);
 }
 int queue(float x, int iter, ArrayList<Personne> queue) {
   if (iter == queue.size()) {
@@ -166,7 +173,7 @@ int queue(float x, int iter, ArrayList<Personne> queue) {
 
 void mousePressed() {
 
-  //println(mouseX, mouseY);
+  println(mouseX, mouseY);
   //C2.set(mouseX, mouseY);
   // set actioin to add_person_button
   if (move_a_station.in())
@@ -349,12 +356,12 @@ void mousePressed() {
 void draw() {
   //Background
   image(bg, 0, 0);
-  fill(100, 0, 0);
+  //fill(100, 0, 0);
 
-  rect(0, A.y2 - A.img.height*0.06, width, A.img.height*0.07);
-  rect(0, B.y2 - B.img.height*0.06, width, B.img.height*0.07);
-  rect(0, C.y2 - C.img.height*0.06, width, C.img.height*0.07);
-  fill(255, 155, 0);
+  //rect(0, A.y2 - A.img.height*0.06, width, A.img.height*0.07);
+  //rect(0, B.y2 - B.img.height*0.06, width, B.img.height*0.07);
+  //rect(0, C.y2 - C.img.height*0.06, width, C.img.height*0.07);
+  //fill(255, 155, 0);
 
   A.draw();
   B.draw();
@@ -437,7 +444,7 @@ void draw() {
   debug.draw(20);
   move_a_station.text = String.format("déplacement des stations : %b", move_station);
   move_a_station.draw(20);
-
+  image(fg, 0, 0);
   /* --------------------- DEBUG MODE --------------------- */
 
   if (debug_mode) {
