@@ -4,6 +4,56 @@ Ce projet a été réalisé avec processing, dans le but de simuler un téléph�
 
 ---
 
+# Démarche du développement
+
+## Départ
+
+Le code était au départ fait en event-B, un language de spécification qui permet d'avoir une certaines confiance dans le code si les preuves ont été validées grâce à l'outil Rodin. Dans mon cas les preuves et les spécification étaient respectées ce qui fait que j'ai eu confiance dans le fait que mon programme n'ait pas de problème. J'ai donc pu faire la conversion en processing sans trop de crainte, j'ai voulu passer par l'outil Rodin_to_java, mais à cause de l'utilisation de fonction mathématique j'avais du mal et débuguer le code java. J'ai donc suivit les conseils de mes camarades et j'ai finalement réécrit le code en Java à la main. Etant donné que j'avais déjà le code en event-B la traduction a été faites assez vite.
+
+Pour la programmation en Processing, j'avais en tête quand j'étais plus petit de faire un jeu vidéo, et je me suis dis que c'était le bon moment pour faire quelque chose qui y resemble était donné que nous avions quasiment carte blanche au niveau du design. J'ai regardé un tuto sur youtube pour voir si il était possible de procéder comme dans un jeu vidéo en utilisant des sprites ([vidéo](https://youtu.be/-Z9VUr0IRHo?si=96ewv_KlLbbt7T1n)). Etant donné que cela était possible, je suis parti sur cette approche, j'ai récolté les différentes animation sur le site craftpix.net (voir source).
+
+J'ai découpé mon code en différentes partie étant donné que java est un langage orienté objet j'ai donc pu profiter d'un assez grand niveau abstraction.
+
+Le code est découpé en deux grand morceaux :
+
+- La logique métier
+  - les stations
+  - les personnes
+  - les cabines
+  - les titres de transport
+- L'affichage
+  - initialisation des sprites (image)
+  - animation
+  - translation
+  - boutons
+
+L'affichage doit respecter en permanence la logique métier afin de la représenter au mieux et le plus fidèlement possible. Par facilité, quand un garde est violé, le code renverra une GuardException, ce qui permet d'arrêter le programme. Certaines guarde ne se déclenchait que dans des situations atteignables après plusieurs cliques et ce système m'a permis de m'en rendre rapidement compte de certains oublis.
+
+Le code a été découpé comme ceci :
+
+```
+.
+├── Cabine.pde
+├── Direction.java
+├── Guard.pde
+├── GuardException.java
+├── HitBox.pde
+├── InitialisationException.java
+├── Name.java
+├── Personne.pde
+├── ProcessingRework.pde
+├── README.md
+├── Sprite.pde
+├── SpriteSet.pde
+├── Station.pde
+├── Titre_de_transport.java
+├── UI.pde
+```
+
+J'ai aussi créé une classe Guard pour certains guard plus précis quand ceux ci était moins explicite
+
+---
+
 # Que peut on y faire ?
 
 ## Boutons Stationnaire
