@@ -50,13 +50,13 @@ Le code a été découpé comme ceci :
 ├── UI.pde
 ```
 
-J'ai aussi créé une classe Guard pour certains guard plus précis quand ceux ci était moins explicite
+J'ai aussi créé une classe Guard qui renforçait certains guard pour qu'ils correspondent à certains évènement, par exemple l'action "faire grimper une personne dans une cabine" nécessitait en rodin de vérifier position cabine =? position personne et personne.titre /= none. Tandis qu'avec l'apparition du déplacement réel de la cabine, ce n'est plus simplement une téléportation mais une translation. Afin de ne pas dénaturer la logique rodin j'ai préféré ajouter la condition cabine.animation /= true plutot que de donner une nouvelle position (par exemple "cable") à la cabine, ce qui me permet en plus de savoir vers où ma cabine se dirige. Pour rendre le code plus clair et cohérent je n'aurais ne pas implémenter de guard à l'intérieur des fonctions mais je les auraient toutes misent dans la classe guard pour une meilleur lisibilité. C'est comme ça que l'outil rodin to java implémente et j'aurais du faire de même.
 
 ---
 
 # Que peut on y faire ?
 
-## Boutons Stationnaire
+## Boutons Stationnaire (toujours cliquable)
 
 - Faire appaître des personnes qui ont pour but se de rendre aux différentes stations via un bouton situé en haut à gauche de l'écran, chaque appuit sur le bouton fera apparaître une personne à chaque station.
 
@@ -64,7 +64,7 @@ J'ai aussi créé une classe Guard pour certains guard plus précis quand ceux c
 
 - Afficher les hitbox, les zones cliquables des différents éléments dynamique sont mise en évidence. Le contour des zones cliquables est redessiné en vert.
 
-## Elements réactifs
+## Elements réactifs (cliquable si la guarde est respectée)
 
 - Les personnes, toutes celles en dehors d'une cabine sont cliquable et ont une apparence différente selon leur titre de transport. Un clique sur une personne affichera ses informations (Position, titre de transport) et les actions suivantes :
   - Acheter un ticket, la personne n'ayant pas de titre de transport se muniera d'un ticket et pourras donc monter dans la cabine après celles possédant un abonnement.
