@@ -16,7 +16,7 @@ Ce projet a été réalisé avec processing, dans le but de simuler un téléph�
 
 ## Elements réactifs
 
-- Les personnes, toutes celles en dehors d'une cabine sont cliquable et ont une apparence différente selon leur titre de transport
+- Les personnes, toutes celles en dehors d'une cabine sont cliquable et ont une apparence différente selon leur titre de transport. Un clique sur une personne affichera ses informations (Position, titre de transport) et les actions suivantes :
   - Acheter un ticket, la personne n'ayant pas de titre de transport se muniera d'un ticket et pourras donc monter dans la cabine après celles possédant un abonnement.
 
   - Acheter un abonnement, la personne n'ayant pas de titre de transport se muniera d'un abonnement et pourras donc monter dans la cabine avant celles possédant un ticket.
@@ -27,7 +27,7 @@ Ce projet a été réalisé avec processing, dans le but de simuler un téléph�
 
   - Faire disparaitre la personne, la personne disparaitra instantanément dans un nuage de fumée.
 
-- Les cabines, cliquables a tout moment
+- Les cabines, un clique sur une cabine affichera ses informations (Position, Id) et les actions suivantes :
   - Descendre, fait descendre la dernière personne montée dans la cabine, en retirant les tickets aux personnes en possédant, ne fonctionne que si il ya quelqu'un dans la cabine.
 
   - Station suivante, fait avancer la cabine vers la prochaine station suivant la chaine A->B->C->A->. . . et cela seulement si toutes les cabines sont arrétée a une station
