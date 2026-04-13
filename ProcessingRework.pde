@@ -9,7 +9,7 @@ PImage bg, station, station3, station4, cabine, cabine_idle;
 Object rm_from = null;
 
 int sprite_size = 0;
-float resize_factor = 2;
+float resize_factor = 1;
 // logique métier
 Cabine C1, C2;
 Station A, B, C, moving;
@@ -28,7 +28,7 @@ void setup() {
   pixelDensity(1);
   size(1024, 604);
   frameRate(30);
-  //fullScreen();
+  fullScreen();
   noSmooth();
 
   //windowResizable(true);
@@ -78,7 +78,7 @@ void setup() {
 
   A.set(width-station.width-160, height-station.height, width-160, height);
   B.set(0, height/2-station.height*0.3, station.width, height/2+station.height-station.height*0.3);
-  C.set(width-station.width-240, 0, width-station.width, station.height);
+  C.set(width-station.width-240, 0, width-240, station.height);
 
   a = C1.position.cabinePos();
   C1.set(a[0], a[1]);
