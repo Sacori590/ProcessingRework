@@ -4,7 +4,7 @@ import java.util.Iterator;
 ArrayList<PImage> sprites = new ArrayList<PImage>();
 
 
-UI add_person_button, debug, station_is_moving, move_a_station;
+UI add_person_button, debug, station_is_moving, move_a_station, rdm;
 PImage bg, fg, station, station3, station4, cabine, cabine_idle;
 Object rm_from = null;
 
@@ -20,8 +20,14 @@ ArrayList<Cabine> CabineSet = new ArrayList<Cabine>();
 ArrayList<Station> StationsSet = new ArrayList<Station>();
 boolean debug_mode = false;
 boolean move_station = false;
-
+boolean random_ = false;
+long cT = 0;
+long pT = 0;
+long cT2 = 0;
+long pT2 = 0;
 float[] a;
+Random random;
+
 
 void setup() {
   // size and bg size must be equals
@@ -106,7 +112,10 @@ void setup() {
   add_person_button = new UI(10, 130, 30, 150, "Add a person to each station");
   debug = new UI(10, 160, 30, 180, "Show hitboxes");
   move_a_station = new UI(10, 190, 30, 210, "Move stations to another location :");
+  rdm = new UI(10, 220, 30, 240, "Mode démonstration :");
   station_is_moving = new UI(0, 0, 0, 0);
+
+  random = new Random();
 }
 
 void drawCable() {
@@ -143,7 +152,7 @@ int queue(float x, int iter, ArrayList<Personne> queue) {
     for (Cabine c : CabineSet )
     {
 
-      if (s.enterers.contains(current) && current.atStation(s) && c == s.cabine && c.atStation(s)) {
+      if (s.enterers.contains(current) && current.atStation(s) && c == s.cabine && c.atStation(s) &&Guard.mount(current, current.station)) {
 
         s.persons.add(current);
 
@@ -174,11 +183,13 @@ int queue(float x, int iter, ArrayList<Personne> queue) {
 
 void mousePressed() {
 
-  println(mouseX, mouseY);
+  //println(mouseX, mouseY);
   //C2.set(mouseX, mouseY);
   // set actioin to add_person_button
   if (move_a_station.in())
     move_station =!move_station;
+  if (rdm.in())
+    random_ = !random_ ;
   if (add_person_button.in()) {
     for (Station s : StationsSet) {
       //add sprite
@@ -408,6 +419,29 @@ void draw() {
     }
   }
 
+  if (random_) {
+    cT = millis();
+    if ((cT - pT) > 500) {
+      pT = cT;
+      cT = millis();
+      if ((int) (Math.random()*20) == 0) {
+        //random.summon();
+      } else {
+        for (int i =0; i<10; i++) {
+          random.getPersonAction();
+        }
+      }
+    }
+    if (!C2.animation && !C1.animation) {
+      cT2 = millis();
+      if ((cT2 - pT2) > 2000) {
+        pT2 = cT2;
+        cT2 = millis();
+        if (!C1.animation && !C2.animation)
+          random.getCabineAction();
+      }
+    }
+  }
 
   for (Cabine n : CabineSet) {
     if (to_remove != null && n.persons.contains(to_remove)) {
@@ -443,9 +477,13 @@ void draw() {
 
   add_person_button.draw(20);
   debug.draw(20);
-  move_a_station.text = String.format("Move stations to another location : %b", move_station);
+  rdm.draw(20);
+  if (moving != null)
+    move_a_station.text = String.format("Move stations to another location : %b", move_station);
+  rdm.text = String.format("Mode démonstration : %b", random_);
   move_a_station.draw(20);
   image(fg, 0, 0);
+
   /* --------------------- DEBUG MODE --------------------- */
 
   if (debug_mode) {

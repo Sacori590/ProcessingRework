@@ -60,6 +60,9 @@ public class Cabine extends Sprite {
 
   // déplace la cabine vers la prochaine station possible
   void move(Station destination) throws GuardException {
+    //println("départ " + this.position + "    ---->     destination "  + destination );
+
+
     if (destination != this.position) {
       this.position.remove(this);
       this.position = destination;

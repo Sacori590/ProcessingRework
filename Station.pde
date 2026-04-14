@@ -80,7 +80,7 @@ public class Station extends HitBox {
     if (this.cabine != null) {
       this.cabine = null;
     } else {
-      throw new GuardException("Remove Cabine");
+      throw new GuardException("there is no cabine at the station");
     }
   }
 

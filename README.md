@@ -86,6 +86,8 @@ La classe Guard renforce certains guard pour qu'ils correspondent à certains é
 
 - Afficher les hitbox, les zones cliquables des différents éléments dynamique sont mise en évidence. Le contour des zones cliquables est redessiné en vert.
 
+- Activer le mode de démonstration, des actions aléatoires vont se dérouler à l'écran sur base des éléments affichés, ce mode ne supprimera, pas n'ajoutera de personne. (Les évènements étant complètements aléatoires il est possible que les personnes montent et descendent instantanément)
+
 ## Elements réactifs (cliquable si la guarde est respectée)
 
 - Les personnes, toutes celles en dehors d'une cabine sont cliquable et ont une apparence différente selon leur titre de transport. Un clique sur une personne affichera ses informations (Position, titre de transport) et les actions suivantes :
