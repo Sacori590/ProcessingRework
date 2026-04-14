@@ -125,18 +125,32 @@ La ligne `size(int width ,int height);` vous permet de choisir une résolution d
 - `size(1024, 604);` (écran moyen)
 - `size(735, 478);` (petit écran)
 - `size(2304, 1296);` (taille original du fond d'écran pour les trèssss grand écran)
+- `size(1470, 956);`(résolutions des photos)
 
 le reste du code n'as normalement pas besoin d'être modifié pour satisfaire le confort utilisateur a moins qu'il souhaite ajouter des stations ou des cabines, ce processus est possible sans trop de difficulté mais nécessite de revoir les fonctions `nextStations()`, `previousStation` ainsi que les invariants de classe de Station et Cabine car ils n'acceptent respectivement que les id A,B,C et 1,2.
 
 # Photos
 
-lancement
-![alt text](image.png)
-exemple générale
+### lancement
 
-bulle interactive d'une personne
+![alt text](images/image.png)
 
-bulle interactive d'une cabine
+### exemple générale
+
+![alt text](images/image-1.png)
+
+### bulle interactive d'une personne
+
+![alt text](images/image-2.png)
+
+### bulle interactive d'une cabine
+
+![alt text](images/image-3.png)
+(dans l'image ci dessus, "position : B" signifie que la cabine se dirige vers la station B car elle n'est actuellement pas a une station)
+
+### Pop up de déplacement d'une station
+
+![alt text](images/image-4.png)
 
 # Sources
 
@@ -144,6 +158,8 @@ Merci à craftpix.net qui m'a permis de reprendre des sprites libre de droit qui
 
 - Les personnages : https://craftpix.net/freebies/free-schoolgirls-anime-character-pixel-sprite-pack/
 - Le fond d'écran : https://craftpix.net/freebies/free-nature-backgrounds-pixel-art/?num=1&count=72&sq=nature&pos=5
+
+Les stations, les cabines et leurs animations ont cependant été réalisée par mes soins.
 
 # Mes regrets
 

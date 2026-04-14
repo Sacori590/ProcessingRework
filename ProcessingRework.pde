@@ -27,6 +27,7 @@ void setup() {
   // size and bg size must be equals
   pixelDensity(1);
   size(1024, 604);
+  size(1920, 1080);
   frameRate(60);
   fullScreen();
   noSmooth();
@@ -84,7 +85,7 @@ void setup() {
 
   A.set(width*0.73, height*0.85-station.height, width*0.73+station.width, height*0.85);
   B.set(width*0.04, height*0.50-station.height, width*0.04+station.width, height*0.50);
-  C.set(width*0.5, height*0.34-station.height, width*0.5+station.width, height*0.34);
+  C.set(width*0.50, height*0.32-station.height, width*0.50+station.width, height*0.32);
 
   a = C1.position.cabinePos();
   C1.set(a[0], a[1]);
@@ -102,9 +103,9 @@ void setup() {
 
   // fix positions
   sprite_size = sprites.get(0).height;
-  add_person_button = new UI(10, 130, 30, 150, "Ajouter une personne");
-  debug = new UI(10, 160, 30, 180, "Afficher les Hitbox des éléments");
-  move_a_station = new UI(10, 190, 30, 210, "Déplacement des stations");
+  add_person_button = new UI(10, 130, 30, 150, "Add a person to each station");
+  debug = new UI(10, 160, 30, 180, "Show hitboxes");
+  move_a_station = new UI(10, 190, 30, 210, "Move stations to another location :");
   station_is_moving = new UI(0, 0, 0, 0);
 }
 
@@ -442,7 +443,7 @@ void draw() {
 
   add_person_button.draw(20);
   debug.draw(20);
-  move_a_station.text = String.format("déplacement des stations : %b", move_station);
+  move_a_station.text = String.format("Move stations to another location : %b", move_station);
   move_a_station.draw(20);
   image(fg, 0, 0);
   /* --------------------- DEBUG MODE --------------------- */
