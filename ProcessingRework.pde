@@ -477,11 +477,10 @@ void draw() {
 
   add_person_button.draw(20);
   debug.draw(20);
-  rdm.draw(20);
-  if (moving != null)
-    move_a_station.text = String.format("Move stations to another location : %b", move_station);
+  move_a_station.text = String.format("Move stations to another location : %b", move_station);
   rdm.text = String.format("Demo mode : %b", random_);
   move_a_station.draw(20);
+  rdm.draw(20);
   image(fg, 0, 0);
 
   /* --------------------- DEBUG MODE --------------------- */
