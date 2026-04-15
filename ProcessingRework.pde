@@ -112,7 +112,7 @@ void setup() {
   add_person_button = new UI(10, 130, 30, 150, "Add a person to each station");
   debug = new UI(10, 160, 30, 180, "Show hitboxes");
   move_a_station = new UI(10, 190, 30, 210, "Move stations to another location :");
-  rdm = new UI(10, 220, 30, 240, "Mode démonstration :");
+  rdm = new UI(10, 220, 30, 240, "Demo mode :");
   station_is_moving = new UI(0, 0, 0, 0);
 
   random = new Random();
@@ -480,7 +480,7 @@ void draw() {
   rdm.draw(20);
   if (moving != null)
     move_a_station.text = String.format("Move stations to another location : %b", move_station);
-  rdm.text = String.format("Mode démonstration : %b", random_);
+  rdm.text = String.format("Demo mode : %b", random_);
   move_a_station.draw(20);
   image(fg, 0, 0);
 

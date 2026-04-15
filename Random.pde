@@ -51,9 +51,6 @@ public  class Random {
       break;
       case(3):
       if (Guard.mount(personne, personne.station)) {
-        println("mount");
-        println(personne);
-        println(personne.station);
 
         personne.x -= personne.anim_size/3*personne.station.enterers.size();
         personne.station.enterers.add(personne);
@@ -68,12 +65,9 @@ public  class Random {
   void getCabineAction() {
     Cabine cabine = getCabine();
     int index = (int) (Math.random()*40);
-    print(index);
 
     if (index >10 && cabine.count()>3) {
       if (!cabine.animation && cabine.persons.size() >0) {
-        println(cabine.persons.size()-1);
-        println(cabine);
         to_remove = cabine.persons.get(cabine.persons.size()-1);
       }
     } else if (index == 8) {
